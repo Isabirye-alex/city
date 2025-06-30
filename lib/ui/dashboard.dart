@@ -1,160 +1,181 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.all(20),
-      children: [
-        _buildHeader(context),
-        SizedBox(height: 20),
-        _buildProductSummaryCards(),
-        SizedBox(height: 20),
-        _buildProductTable(),
-        SizedBox(height: 20),
-        _buildOrderSummary(),
-      ],
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text("Dashboard", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        Row(
-          children: [
-            SizedBox(
-              width: 250,
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  filled: true,
-                  fillColor: Colors.black26,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                  prefixIcon: Icon(Icons.search),
+    return Scaffold(
+      body: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: [
+          // Top Header Section
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Dashboard',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search...',
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(width: 10),
-            // CircleAvatar(backgroundImage: AssetImage('assets/avatar.png')), // Replace with your own asset
-          ],
-        )
-      ],
-    );
-  }
-
-  Widget _buildProductSummaryCards() {
-    List<Map<String, dynamic>> cards = [
-      {'title': 'All Product', 'count': 18, 'color': Colors.blue},
-      {'title': 'Out of Stock', 'count': 3, 'color': Colors.red},
-      {'title': 'Limited Stock', 'count': 2, 'color': Colors.orange},
-      {'title': 'Other Stock', 'count': 13, 'color': Colors.green},
-    ];
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: cards.map((item) {
-        return Expanded(
-          child: Card(
-            margin: EdgeInsets.symmetric(horizontal: 8),
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.inventory, color: item['color']),
-                  SizedBox(height: 10),
-                  Text("${item['count']} Product", style: TextStyle(fontWeight: FontWeight.bold)),
-                  LinearProgressIndicator(value: item['count'] / 20, color: item['color']),
-                  Text(item['title'], style: TextStyle(color: Colors.grey[400])),
+              Row(
+                children: const [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundImage: AssetImage('assets/user.jpg'),
+                  ),
+                  SizedBox(width: 8),
+                  Text('Alex', style: TextStyle(fontSize: 16)),
                 ],
               ),
-            ),
+            ],
           ),
-        );
-      }).toList(),
-    );
-  }
+          const SizedBox(height: 24),
 
-  Widget _buildProductTable() {
-    final products = [
-      {'name': 'Samsung A53 Mobile', 'category': 'Electronics', 'sub': 'Mobile', 'price': 15000},
-      {'name': 'iPhone 14 Pro', 'category': 'Electronics', 'sub': 'Mobile', 'price': 5000},
-      {'name': 'Apple Watch', 'category': 'Electronics', 'sub': 'Gadgets', 'price': 10000},
-    ];
-
-    return Card(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(12),
-            child: Row(
-              children: const [
-                Expanded(flex: 3, child: Text('Product Name')),
-                Expanded(child: Text('Category')),
-                Expanded(child: Text('Sub')),
-                Expanded(child: Text('Price')),
-                SizedBox(width: 50), // Edit icon space
-                SizedBox(width: 50), // Delete icon space
-              ],
-            ),
-          ),
-          Divider(color: Colors.white24),
-          ...products.map((product) {
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Row(
+          // Products Section Header
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Products',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              Row(
                 children: [
-                  Expanded(flex: 3, child: Text(product['name'].toString(), overflow: TextOverflow.ellipsis)),
-                  Expanded(child: Text(product['category'].toString())),
-                  Expanded(child: Text(product['sub'].toString())),
-                  Expanded(child: Text('${product['price']}')),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.edit, color: Colors.grey)),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.delete, color: Colors.red)),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: const Text('Add New Item'),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(onPressed: () {}, icon: const Icon(Icons.refresh)),
                 ],
               ),
-            );
-          }),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Stats Cards Row
+          Row(
+            children: [
+              _buildStatCard('All Products', '120'),
+              _buildStatCard('Out of Stock', '12'),
+              _buildStatCard('Low in Stock', '8'),
+              _buildStatCard('Other Stock', '100'),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Data Table and Chart
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Data Table Expanded
+              Expanded(
+                flex: 3,
+                child: DataTable(
+                  columnSpacing: 12,
+                  columns: const [
+                    DataColumn(label: Text('Image')),
+                    DataColumn(label: Text('Name')),
+                    DataColumn(label: Text('Subcategory')),
+                    DataColumn(label: Text('Category')),
+                    DataColumn(label: Text('Price')),
+                    DataColumn(label: Text('Actions')),
+                  ],
+                  rows: [
+                    for (int i = 0; i < 5; i++)
+                      DataRow(
+                        cells: [
+                          const DataCell(
+                            CircleAvatar(
+                              backgroundImage: AssetImage('assets/sample.jpg'),
+                            ),
+                          ),
+                          DataCell(Text('Product $i')),
+                          const DataCell(Text('Phones')),
+                          const DataCell(Text('Electronics')),
+                          const DataCell(Text('\$299')),
+                          DataCell(
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.edit, size: 20),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.delete, size: 20),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 16),
+              // Graph Placeholder
+              Expanded(
+                flex: 1,
+                child: Container(
+                  height: 300,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(color: Colors.grey.shade300, blurRadius: 6),
+                    ],
+                  ),
+                  child: const Center(child: Text('Product Graph Here')),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildOrderSummary() {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Row(
+  Widget _buildStatCard(String label, String value) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.only(right: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 6)],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 120,
-              width: 120,
-              child: PieChart(
-                PieChartData(sections: [
-                  PieChartSectionData(value: 1, color: Colors.blue, title: ''),
-                  PieChartSectionData(value: 1, color: Colors.orange, title: ''),
-                  PieChartSectionData(value: 1, color: Colors.yellow, title: ''),
-                ]),
-              ),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
-            SizedBox(width: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Orders Details", style: TextStyle(fontSize: 18)),
-                SizedBox(height: 10),
-                Text("All Orders - 3", style: TextStyle(color: Colors.white70)),
-                Text("Pending Orders - 1", style: TextStyle(color: Colors.white70)),
-                Text("Processed Orders - 0", style: TextStyle(color: Colors.white70)),
-              ],
-            )
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
-);
-}
+    );
+  }
 }

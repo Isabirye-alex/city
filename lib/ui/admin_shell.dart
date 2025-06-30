@@ -62,46 +62,88 @@ class AdminShell extends StatelessWidget {
                 ],
               ),
             ),
-      body: Row(
+      body: Column(
         children: [
-          if (isWide)
-            Expanded(
-              flex: 0,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: constraints.maxHeight,
+          // Header section for search bar and heading items
+          Container(
+            padding: EdgeInsets.all(16),
+            color: Colors.grey[100],
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search...',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      child: IntrinsicHeight(
-                        child: NavigationRail(
-                          elevation: 20,
-                          minWidth: 160,
-                          backgroundColor: Colors.black45,
-                          selectedIndex: _getIndex(context),
-                          onDestinationSelected: (index) => context.go(
-                            destinations[index]['route'] as String,
-                          ),
-                          labelType: NavigationRailLabelType.all,
-                          destinations: [
-                            for (var item in destinations)
-                              NavigationRailDestination(
-                                icon: Icon(item['icon'] as IconData),
-                                label: Text(item['label'] as String),
-                              ),
-                          ],
-                        ),
-                      ),
+                      filled: true,
+                      fillColor: Colors.white,
                     ),
-                  );
-                },
-              ),
+                  ),
+                ),
+                SizedBox(width: 16),
+                IconButton(icon: Icon(Icons.notifications), onPressed: () {}),
+                IconButton(icon: Icon(Icons.settings), onPressed: () {}),
+              ],
             ),
+          ),
+          // Main content
           Expanded(
-            child: Container(
-              decoration: BoxDecoration(color: Colors.white),
-              child: child,
+            child: Row(
+              children: [
+                if (isWide)
+                  Expanded(
+                    flex: 0,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return SingleChildScrollView(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: constraints.maxHeight,
+                            ),
+                            child: IntrinsicHeight(
+                              child: NavigationRail(
+                                elevation: 20,
+                                minWidth: 200,
+                                backgroundColor: Colors.black45,
+                                selectedIndex: _getIndex(context),
+                                onDestinationSelected: (index) => context.go(
+                                  destinations[index]['route'] as String,
+                                ),
+                                labelType: NavigationRailLabelType.all,
+                                destinations: [
+                                  for (var item in destinations)
+                                    NavigationRailDestination(
+                                      icon: Icon(
+                                        item['icon'] as IconData,
+                                        color: Colors.white70,
+                                      ),
+                                      selectedIcon: Icon(
+                                        item['icon'] as IconData,
+                                        color: Colors.white,
+                                      ),
+                                      label: Text(
+                                        item['label'] as String,
+                                        style: TextStyle(color: Colors.white70),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(color: Colors.white),
+                    child: child,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -111,8 +153,10 @@ class AdminShell extends StatelessWidget {
 
   int _getIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
+    // Adjust index to account for logo destination
     return destinations.indexWhere(
-      (d) => location.startsWith(d['route'] as String),
-    );
+          (d) => location.startsWith(d['route'] as String),
+        ) +
+        0; // +1 to account for logo at index 0
   }
 }
