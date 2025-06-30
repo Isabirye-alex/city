@@ -40,7 +40,7 @@ class DashboardPage extends StatelessWidget {
               ),
             ),
             SizedBox(width: 10),
-            CircleAvatar(backgroundImage: AssetImage('assets/avatar.png')), // Replace with your own asset
+            // CircleAvatar(backgroundImage: AssetImage('assets/avatar.png')), // Replace with your own asset
           ],
         )
       ],

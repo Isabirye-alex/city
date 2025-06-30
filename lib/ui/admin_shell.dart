@@ -8,7 +8,7 @@ class AdminShell extends StatelessWidget {
   final destinations = const [
     {'label': 'Dashboard', 'icon': Icons.dashboard, 'route': '/dashboard'},
     {'label': 'Categories', 'icon': Icons.category, 'route': '/categories'},
-    {'labele': 'Subcategories', 'icon': Icons.subdirectory_arrow_right, 'route': '/subcategories'},
+    {'label': 'Subcategories', 'icon': Icons.subdirectory_arrow_right, 'route': '/subcategories'},
     {'label': 'Products', 'icon': Icons.shopping_cart, 'route': '/products'},
     {'label': 'Brands', 'icon': Icons.branding_watermark, 'route': '/brands'},
     {'label': 'Orders', 'icon': Icons.receipt, 'route': '/orders'},
