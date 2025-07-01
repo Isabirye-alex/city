@@ -35,7 +35,8 @@ class DashboardPage extends StatelessWidget {
                 children: const [
                   CircleAvatar(
                     radius: 20,
-                    backgroundImage: AssetImage('assets/user.jpg'),
+                    // backgroundImage: AssetImage('assets/user.jpg'),
+                    child: Icon(Icons.person, size: 24),
                   ),
                   SizedBox(width: 8),
                   Text('Alex', style: TextStyle(fontSize: 16)),
@@ -96,10 +97,10 @@ class DashboardPage extends StatelessWidget {
                     DataColumn(label: Text('Actions')),
                   ],
                   rows: [
-                    for (int i = 0; i < 5; i++)
+                    for (int i = 0; i < 50; i++)
                       DataRow(
                         cells: [
-                          const DataCell(
+                          DataCell(
                             CircleAvatar(
                               backgroundImage: AssetImage('assets/sample.jpg'),
                             ),
@@ -157,7 +158,7 @@ class DashboardPage extends StatelessWidget {
         margin: const EdgeInsets.only(right: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.green,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 6)],
         ),
