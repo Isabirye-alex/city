@@ -65,30 +65,30 @@ class AdminShell extends StatelessWidget {
       body: Column(
         children: [
           // Header section for search bar and heading items
-          Container(
-            padding: EdgeInsets.all(16),
-            color: Colors.grey[100],
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search...',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 16),
-                IconButton(icon: Icon(Icons.notifications), onPressed: () {}),
-                IconButton(icon: Icon(Icons.settings), onPressed: () {}),
-              ],
-            ),
-          ),
+          // Container(
+          //   padding: EdgeInsets.all(16),
+          //   color: Colors.grey[100],
+          // child: Row(
+          //   children: [
+          //     Expanded(
+          //       child: TextField(
+          //         decoration: InputDecoration(
+          //           hintText: 'Search...',
+          //           prefixIcon: Icon(Icons.search),
+          //           border: OutlineInputBorder(
+          //             borderRadius: BorderRadius.circular(8),
+          //           ),
+          //           filled: true,
+          //           fillColor: Colors.white,
+          //         ),
+          //       ),
+          //     ),
+          //     SizedBox(width: 16),
+          //     IconButton(icon: Icon(Icons.notifications), onPressed: () {}),
+          //     IconButton(icon: Icon(Icons.settings), onPressed: () {}),
+          //   ],
+          // ),
+          // ),
           // Main content
           Expanded(
             child: Row(
@@ -99,39 +99,68 @@ class AdminShell extends StatelessWidget {
                     child: LayoutBuilder(
                       builder: (context, constraints) {
                         return SingleChildScrollView(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight: constraints.maxHeight,
-                            ),
-                            child: IntrinsicHeight(
-                              child: NavigationRail(
-                                elevation: 20,
-                                minWidth: 200,
-                                backgroundColor: Colors.black45,
-                                selectedIndex: _getIndex(context),
-                                onDestinationSelected: (index) => context.go(
-                                  destinations[index]['route'] as String,
-                                ),
-                                labelType: NavigationRailLabelType.all,
-                                destinations: [
-                                  for (var item in destinations)
-                                    NavigationRailDestination(
-                                      icon: Icon(
-                                        item['icon'] as IconData,
-                                        color: Colors.white70,
-                                      ),
-                                      selectedIcon: Icon(
-                                        item['icon'] as IconData,
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(16),
+                                // color: Colors.black45,
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.manage_accounts,
+                                      size: 48,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      "Menu",
+                                      style: TextStyle(
                                         color: Colors.white,
-                                      ),
-                                      label: Text(
-                                        item['label'] as String,
-                                        style: TextStyle(color: Colors.white70),
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: constraints.maxHeight,
+                                ),
+                                child: IntrinsicHeight(
+                                  child: NavigationRail(
+                                    elevation: 20,
+                                    minWidth: 140,
+                                    backgroundColor: Colors.black45,
+                                    selectedIndex: _getIndex(context),
+                                    onDestinationSelected: (index) =>
+                                        context.go(
+                                          destinations[index]['route']
+                                              as String,
+                                        ),
+                                    labelType: NavigationRailLabelType.all,
+                                    destinations: [
+                                      for (var item in destinations)
+                                        NavigationRailDestination(
+                                          icon: Icon(
+                                            item['icon'] as IconData,
+                                            color: Colors.white70,
+                                          ),
+                                          selectedIcon: Icon(
+                                            item['icon'] as IconData,
+                                            color: Colors.white,
+                                          ),
+                                          label: Text(
+                                            item['label'] as String,
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       },
