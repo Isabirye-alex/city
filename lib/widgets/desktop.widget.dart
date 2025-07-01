@@ -8,6 +8,7 @@ class Desktopwidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDesktop = MediaQuery.of(context).size.width >= 1000;
     final controller = Get.put(DashBoardController());
     final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
@@ -78,17 +79,40 @@ class Desktopwidget extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(),
-            child: Text(
-              'Dashboard',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(color: Colors.green),
+                  child: Text(
+                    'Dashboard',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
               ),
-            ),
+              // Spacer(flex: 1),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(color: Colors.blue),
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      'Add New Product',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 20),
           Row(
@@ -140,86 +164,18 @@ class Desktopwidget extends StatelessWidget {
             children: [
               Expanded(
                 flex: 2,
+                child: ABarGraph(controller: controller, isDesktop: isDesktop),
+              ),
+              Expanded(
                 child: Container(
+                  padding: EdgeInsets.all(10),
+                  margin: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey, width: 1),
                   ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Weekly Sales',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      SizedBox(
-                        height: 300,
-                        child: BarChart(
-                          BarChartData(
-                            titlesData: buildFlTitlesData(),
-                            borderData: FlBorderData(
-                              show: true,
-                              border: Border(
-                                top: BorderSide.none,
-                                right: BorderSide.none,
-                                left: BorderSide(color: Colors.black, width: 1),
-                                bottom: BorderSide(
-                                  color: Colors.black,
-                                  width: 1,
-                                ),
-                              ),
-                            ),
-                            gridData: FlGridData(
-                              show: true,
-                              drawHorizontalLine: true,
-                              verticalInterval: 1,
-                              horizontalInterval: 100,
-                              drawVerticalLine: false,
-                              getDrawingHorizontalLine: (value) =>
-                                  FlLine(color: Colors.grey, strokeWidth: 0.5),
-                            ),
-                            barGroups: controller.weeklySales
-                                .asMap()
-                                .entries
-                                .map((entry) {
-                                  int index = entry.key;
-                                  double value = entry.value;
-                                  return BarChartGroupData(
-                                    x: index,
-                                    barRods: [
-                                      BarChartRodData(
-                                        toY: value,
-                                        color: Colors.blue,
-                                        width: 20,
-                                        borderRadius: BorderRadius.zero,
-                                      ),
-                                    ],
-                                  );
-                                })
-                                .toList(),
-                                groupsSpace: 4,
-                                barTouchData: BarTouchData(
-                                  enabled: true,
-                                  touchTooltipData: BarTouchTooltipData(
-                                    getTooltipColor: (_) => Colors.white),
-                                    touchCallback: (event, response) {
-                                      if (response != null &&
-                                          response.spot != null) {
-                                        final spot = response.spot!;
-                                        final index = spot.x.toInt();
-                                        final value = controller.weeklySales[index];
-                                        print('Touched value: $value');
-                                      }
-                                    },
-                                  )
-                                )
-                          ),
-                        ),
-                    ]
-                  ),
+                  child: APieChart(),
                 ),
               ),
             ],
@@ -228,8 +184,209 @@ class Desktopwidget extends StatelessWidget {
       ),
     );
   }
+}
 
-  buildFlTitlesData() {}
+class APieChart extends StatelessWidget {
+  const APieChart({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // final controller = Get.put(DashBoardController());
+
+    // Group orders by status and sum their totalAmount
+    final Map<String, double> statusTotals = {};
+    for (final order in DashBoardController.orders) {
+      statusTotals.update(
+        order.status,
+        (value) => value + order.totalAmount.toDouble(),
+        ifAbsent: () => order.totalAmount.toDouble(),
+      );
+    }
+
+    // Define colors per status
+    final Map<String, Color> statusColors = {
+      'Delivered': Colors.green,
+      'Pending': Colors.orange,
+      'Confirmed': Colors.blue,
+      'Cancelled': Colors.red,
+      'Other': Colors.grey,
+    };
+
+    final List<PieChartSectionData> pieSections = statusTotals.entries.map((
+      entry,
+    ) {
+      final color = statusColors[entry.key] ?? Colors.black;
+      return PieChartSectionData(
+        color: color,
+        value: entry.value,
+        title: '${entry.value.toInt()}',
+        radius: 50,
+        titleStyle: const TextStyle(fontSize: 12, color: Colors.black),
+      );
+    }).toList();
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: 200,
+          child: PieChart(
+            PieChartData(
+              sections: pieSections,
+              sectionsSpace: 2,
+              centerSpaceRadius: 30,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        // Legend with totals
+        Column(
+          children: statusTotals.entries.map((entry) {
+            final color = statusColors[entry.key] ?? Colors.black;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Center(
+                    child: Container(
+                      width: 12,
+                      height: 12,
+                      margin: const EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      '${entry.key}: \$${entry.value.toStringAsFixed(2)}',
+                      style: const TextStyle(fontSize: 12, color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+}
+
+class ABarGraph extends StatelessWidget {
+  const ABarGraph({
+    super.key,
+    required this.controller,
+    required this.isDesktop,
+  });
+
+  final DashBoardController controller;
+  final bool isDesktop;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(14)),
+      child: Column(
+        children: [
+          Text(
+            'Weekly Sales',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 10),
+          SizedBox(
+            height: 300,
+            child: BarChart(
+              BarChartData(
+                titlesData: buildFlTitlesData(),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border(
+                    top: BorderSide.none,
+                    right: BorderSide.none,
+                    left: BorderSide(color: Colors.black, width: 1),
+                    bottom: BorderSide(color: Colors.black, width: 1),
+                  ),
+                ),
+                gridData: FlGridData(
+                  show: true,
+                  drawHorizontalLine: false,
+                  verticalInterval: 1,
+                  horizontalInterval: 100,
+                  drawVerticalLine: false,
+                  getDrawingHorizontalLine: (value) =>
+                      FlLine(color: Colors.grey, strokeWidth: 0.5),
+                ),
+                barGroups: controller.weeklySales.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  double value = entry.value;
+                  return BarChartGroupData(
+                    x: index,
+                    barRods: [
+                      BarChartRodData(
+                        toY: value,
+                        color: Colors.blue,
+                        width: 20,
+                        borderRadius: BorderRadius.zero,
+                      ),
+                    ],
+                  );
+                }).toList(),
+                groupsSpace: 4,
+                barTouchData: BarTouchData(
+                  enabled: true,
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipColor: (_) => Colors.white,
+                  ),
+
+                  touchCallback: isDesktop
+                      ? (event, response) {
+                          // if (response != null &&
+                          //     response.spot != null) {
+                          //   final spot = response.spot!;
+                          //   final index = spot.spotIndex;
+                          //   final value =
+                          //       controller.weeklySales[index];
+                          //   print('Touched value: $value');
+                          // }
+                        }
+                      : null,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+FlTitlesData buildFlTitlesData() {
+  return FlTitlesData(
+    show: true,
+    bottomTitles: AxisTitles(
+      sideTitles: SideTitles(
+        showTitles: true,
+        reservedSize: 40,
+        getTitlesWidget: (value, meta) {
+          final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+          final index = value.toInt() % days.length;
+          final day = days[index];
+          return SideTitleWidget(space: 0, meta: meta, child: Text(day));
+        },
+      ),
+    ),
+    leftTitles: AxisTitles(
+      sideTitles: SideTitles(showTitles: true, interval: 100, reservedSize: 50),
+    ),
+    rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+    topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+  );
 }
 // This widget can be used to create a desktop layout for the admin dashboard.
 

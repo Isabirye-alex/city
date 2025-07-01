@@ -33,25 +33,7 @@ class DashBoardController extends GetxController {
     */
 
     // Dummy data for visual representation (Mon - Sun)
-    weeklySales.value = [
-      120.0,
-      240.0,
-      180.0,
-      300.0,
-      210.0,
-      360.0,
-      390.0,
-      120.0,
-      240.0,
-      180.0,
-      300.0,
-      210.0,
-      360.0,
-      390.0,
-      400.0,
-      500.0,
-      700.0,
-    ];
+    weeklySales.value = [120.0, 240.0, 180.0, 300.0, 210.0, 360.0, 390.0];
   }
 
   void _calculateMonthlySales() {
@@ -99,6 +81,50 @@ class DashBoardController extends GetxController {
         paidAt: DateTime.now().subtract(Duration(days: 3)),
         deliveredAt: null,
         status: 'Pending',
+      ),
+      OrderModel(
+        id: 2,
+        userId: 2,
+        totalAmount: 200,
+        shippingAddress: '456 Elm St',
+        paymentMethod: 'PayPal',
+        isPaid: true,
+        paidAt: DateTime.now().subtract(Duration(days: 3)),
+        deliveredAt: null,
+        status: 'Pending',
+      ),
+      OrderModel(
+        id: 2,
+        userId: 2,
+        totalAmount: 200,
+        shippingAddress: '456 Elm St',
+        paymentMethod: 'PayPal',
+        isPaid: true,
+        paidAt: DateTime.now().subtract(Duration(days: 3)),
+        deliveredAt: null,
+        status: 'Delivered',
+      ),
+      OrderModel(
+        id: 2,
+        userId: 2,
+        totalAmount: 200,
+        shippingAddress: '456 Elm St',
+        paymentMethod: 'PayPal',
+        isPaid: true,
+        paidAt: DateTime.now().subtract(Duration(days: 3)),
+        deliveredAt: null,
+        status: 'Confirmed',
+      ),
+      OrderModel(
+        id: 2,
+        userId: 2,
+        totalAmount: 200,
+        shippingAddress: '456 Elm St',
+        paymentMethod: 'PayPal',
+        isPaid: true,
+        paidAt: DateTime.now().subtract(Duration(days: 3)),
+        deliveredAt: null,
+        status: 'Cancelled',
       ),
     ];
   }
