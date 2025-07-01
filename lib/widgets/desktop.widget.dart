@@ -83,8 +83,9 @@ class Desktopwidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
+                flex: 1,
                 child: Container(
-                  decoration: BoxDecoration(color: Colors.green),
+                  decoration: BoxDecoration(),
                   child: Text(
                     'Dashboard',
                     style: TextStyle(
@@ -95,19 +96,36 @@ class Desktopwidget extends StatelessWidget {
                   ),
                 ),
               ),
-              // Spacer(flex: 1),
+              Spacer(flex: 1),
               Expanded(
                 child: Container(
-                  decoration: BoxDecoration(color: Colors.blue),
+                  margin: EdgeInsets.only(right: 10),
+                  padding: EdgeInsets.zero,
+                  decoration: BoxDecoration(),
                   child: TextButton(
                     onPressed: () {},
-                    child: Text(
-                      'Add New Product',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Add New Product',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.add, color: Colors.white),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -180,10 +198,116 @@ class Desktopwidget extends StatelessWidget {
               ),
             ],
           ),
+          SizedBox(height: 20),
+          Container(
+            margin: EdgeInsets.zero,
+            width: double.infinity,
+            child: ADataTable(),
+          ),
         ],
       ),
     );
   }
+}
+
+class ADataTable extends StatelessWidget {
+  const ADataTable({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Example columns and source for demonstration purposes
+    final List<DataColumn> columns = [
+      DataColumn(label: Text('Image')),
+      DataColumn(label: Text('Product Name')),
+      DataColumn(label: Text('Prouct Category')),
+      DataColumn(label: Text('Prouct subcategory')),
+      DataColumn(label: Text('Proucts in Stock')),
+      DataColumn(label: Text('Featured Product')),
+      DataColumn(label: Text('Price')),
+    ];
+
+    final DataTableSource source = ExampleDataTableSource();
+
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: PaginatedDataTable(
+        showCheckboxColumn: true,
+        checkboxHorizontalMargin: 4.0,
+        showFirstLastButtons: true,
+        columns: columns,
+        source: source,
+      ),
+    );
+  }
+}
+
+// Example DataTableSource implementation
+class ExampleDataTableSource extends DataTableSource {
+  final List<Map<String, dynamic>> _data = List.generate(200, (index) {
+    final products = [
+      {
+        'image': 'Not Available',
+        'Product Name': 'Laptop',
+        'Product Category': 'Electronics',
+        'Product subcategory': 'Computers',
+        'Products in Stock': 15,
+        'Featured Product': 'Yes',
+        'Price': '\$1200.00',
+      },
+      {
+        'image': 'Not Available',
+        'Product Name': 'Smartphone',
+        'Product Category': 'Electronics',
+        'Product subcategory': 'Mobile Phones',
+        'Products in Stock': 30,
+        'Featured Product': 'No',
+        'Price': '\$800.00',
+      },
+      {
+        'image': 'Not Available',
+        'Product Name': 'Headphones',
+        'Product Category': 'Accessories',
+        'Product subcategory': 'Audio',
+        'Products in Stock': 50,
+        'Featured Product': 'Yes',
+        'Price': '\$150.00',
+      },
+    ];
+    final product = products[index % products.length];
+    // Optionally, make each row unique
+    return {
+      ...product,
+      'Product Name': '${product['Product Name']} #${index + 1}',
+      'Products in Stock': (product['Products in Stock'] as int) + index,
+      'Price': '\$${(100 + index * 30).toStringAsFixed(2)}',
+    };
+  });
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= _data.length) return null;
+    final row = _data[index];
+    return DataRow(
+      cells: [
+        DataCell(Text(row['image'].toString())),
+        DataCell(Text(row['Product Name'].toString())),
+        DataCell(Text(row['Product Category'].toString())),
+        DataCell(Text(row['Product subcategory'].toString())),
+        DataCell(Text(row['Products in Stock'].toString())),
+        DataCell(Text(row['Featured Product'].toString())),
+        DataCell(Text(row['Price'].toString())),
+      ],
+    );
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => _data.length;
+
+  @override
+  int get selectedRowCount => 0;
 }
 
 class APieChart extends StatelessWidget {
@@ -191,9 +315,6 @@ class APieChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final controller = Get.put(DashBoardController());
-
-    // Group orders by status and sum their totalAmount
     final Map<String, double> statusTotals = {};
     for (final order in DashBoardController.orders) {
       statusTotals.update(
