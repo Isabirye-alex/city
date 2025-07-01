@@ -1,4 +1,5 @@
 import 'package:city/core/controllers/dashboard.controller.dart';
+import 'package:data_table_2/data_table_2.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,7 @@ class Desktopwidget extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
             margin: EdgeInsets.zero,
@@ -200,8 +202,8 @@ class Desktopwidget extends StatelessWidget {
           ),
           SizedBox(height: 20),
           Container(
-            margin: EdgeInsets.zero,
-            width: double.infinity,
+            height: 500,
+            margin: EdgeInsets.symmetric(horizontal: 8),
             child: ADataTable(),
           ),
         ],
@@ -215,34 +217,50 @@ class ADataTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Example columns and source for demonstration purposes
     final List<DataColumn> columns = [
       DataColumn(label: Text('Image')),
       DataColumn(label: Text('Product Name')),
-      DataColumn(label: Text('Prouct Category')),
-      DataColumn(label: Text('Prouct subcategory')),
-      DataColumn(label: Text('Proucts in Stock')),
+      DataColumn(label: Text('Product Category')),
+      DataColumn(label: Text('Product subcategory')),
+      DataColumn(label: Text('Products in Stock')),
       DataColumn(label: Text('Featured Product')),
       DataColumn(label: Text('Price')),
     ];
 
-    final DataTableSource source = ExampleDataTableSource();
+    final DataTableSource source = ADataTableSource();
 
-    return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: PaginatedDataTable(
-        showCheckboxColumn: true,
-        checkboxHorizontalMargin: 4.0,
-        showFirstLastButtons: true,
-        columns: columns,
-        source: source,
+    return Container(
+      height: 500,
+      padding: const EdgeInsets.all(8.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SizedBox(
+          width:
+              1000, // adjust width to fit all columns, or calculate dynamically
+          child: PaginatedDataTable2(
+            headingTextStyle: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            dataRowHeight: 40,
+            sortArrowAlwaysVisible: true,
+            sortArrowIcon: Icons.compare_arrows_outlined,
+            sortAscending: true,
+            showCheckboxColumn: true,
+            scrollController: ScrollController(),
+            checkboxHorizontalMargin: 4.0,
+            showFirstLastButtons: true,
+            columns: columns,
+            source: source,
+          ),
+        ),
       ),
     );
   }
 }
 
-// Example DataTableSource implementation
-class ExampleDataTableSource extends DataTableSource {
+class ADataTableSource extends DataTableSource {
   final List<Map<String, dynamic>> _data = List.generate(200, (index) {
     final products = [
       {
