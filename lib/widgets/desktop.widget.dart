@@ -175,7 +175,8 @@ class Desktopwidget extends StatelessWidget {
                             gridData: FlGridData(
                               show: true,
                               drawHorizontalLine: true,
-                              horizontalInterval: 200,
+                              verticalInterval: 1,
+                              horizontalInterval: 100,
                               drawVerticalLine: false,
                               getDrawingHorizontalLine: (value) =>
                                   FlLine(color: Colors.grey, strokeWidth: 0.5),
@@ -193,16 +194,31 @@ class Desktopwidget extends StatelessWidget {
                                         toY: value,
                                         color: Colors.blue,
                                         width: 20,
-                                        borderRadius: BorderRadius.circular(4),
+                                        borderRadius: BorderRadius.zero,
                                       ),
                                     ],
                                   );
                                 })
                                 .toList(),
+                                groupsSpace: 4,
+                                barTouchData: BarTouchData(
+                                  enabled: true,
+                                  touchTooltipData: BarTouchTooltipData(
+                                    getTooltipColor: (_) => Colors.white),
+                                    touchCallback: (event, response) {
+                                      if (response != null &&
+                                          response.spot != null) {
+                                        final spot = response.spot!;
+                                        final index = spot.x.toInt();
+                                        final value = controller.weeklySales[index];
+                                        print('Touched value: $value');
+                                      }
+                                    },
+                                  )
+                                )
                           ),
                         ),
-                      ),
-                    ],
+                    ]
                   ),
                 ),
               ),

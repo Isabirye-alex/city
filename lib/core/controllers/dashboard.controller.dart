@@ -33,7 +33,25 @@ class DashBoardController extends GetxController {
     */
 
     // Dummy data for visual representation (Mon - Sun)
-    weeklySales.value = [120.0, 240.0, 180.0, 300.0, 210.0, 360.0, 390.0];
+    weeklySales.value = [
+      120.0,
+      240.0,
+      180.0,
+      300.0,
+      210.0,
+      360.0,
+      390.0,
+      120.0,
+      240.0,
+      180.0,
+      300.0,
+      210.0,
+      360.0,
+      390.0,
+      400.0,
+      500.0,
+      700.0,
+    ];
   }
 
   void _calculateMonthlySales() {
