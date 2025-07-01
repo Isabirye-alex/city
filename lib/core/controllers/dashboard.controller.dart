@@ -3,6 +3,7 @@ import 'package:city/models/order.model.dart';
 import 'package:get/get.dart';
 
 class DashBoardController extends GetxController {
+  static DashBoardController get instance => Get.find();
   final RxList<double> weeklySales = <double>[].obs;
   final RxList<double> monthlySales = <double>[].obs;
   static final RxList<OrderModel> orders = <OrderModel>[].obs;

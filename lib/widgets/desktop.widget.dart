@@ -1,11 +1,14 @@
+import 'package:city/core/controllers/dashboard.controller.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Desktopwidget extends StatelessWidget {
   const Desktopwidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(DashBoardController());
     final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -153,11 +156,49 @@ class Desktopwidget extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       SizedBox(
-                        height: 400,
+                        height: 300,
                         child: BarChart(
                           BarChartData(
                             titlesData: buildFlTitlesData(),
-                            borderData: FlBorderData(),
+                            borderData: FlBorderData(
+                              show: true,
+                              border: Border(
+                                top: BorderSide.none,
+                                right: BorderSide.none,
+                                left: BorderSide(color: Colors.black, width: 1),
+                                bottom: BorderSide(
+                                  color: Colors.black,
+                                  width: 1,
+                                ),
+                              ),
+                            ),
+                            gridData: FlGridData(
+                              show: true,
+                              drawHorizontalLine: true,
+                              horizontalInterval: 200,
+                              drawVerticalLine: false,
+                              getDrawingHorizontalLine: (value) =>
+                                  FlLine(color: Colors.grey, strokeWidth: 0.5),
+                            ),
+                            barGroups: controller.weeklySales
+                                .asMap()
+                                .entries
+                                .map((entry) {
+                                  int index = entry.key;
+                                  double value = entry.value;
+                                  return BarChartGroupData(
+                                    x: index,
+                                    barRods: [
+                                      BarChartRodData(
+                                        toY: value,
+                                        color: Colors.blue,
+                                        width: 20,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                    ],
+                                  );
+                                })
+                                .toList(),
                           ),
                         ),
                       ),
