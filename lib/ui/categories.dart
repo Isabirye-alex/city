@@ -1,7 +1,8 @@
-import 'package:city/core/controllers/upload_image_controller.dart';
+import 'package:city/core/controllers/add_category_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
+
 class Categories extends StatefulWidget {
   const Categories({super.key});
 
@@ -14,24 +15,9 @@ class _CategoriesPageState extends State<Categories> {
   String? uploadedFileName;
   bool isImageDropped = false;
 
-  
-
-  final TextEditingController categoryNameController = TextEditingController();
-  final TextEditingController categoryDescriptionController =
-      TextEditingController();
-
-  @override
-  void dispose() {
-    categoryNameController.dispose();
-    categoryDescriptionController.dispose();
-    super.dispose();
-  }
-
-
-
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(UploadImageController());
+    final controller = Get.put(AddCategoryController());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Category'),
@@ -43,7 +29,7 @@ class _CategoriesPageState extends State<Categories> {
           children: [
             // Category Name
             TextFormField(
-              controller: categoryNameController,
+              controller: controller.categoryNameController,
               decoration: const InputDecoration(
                 labelText: 'Category Name',
                 border: OutlineInputBorder(),
@@ -51,15 +37,15 @@ class _CategoriesPageState extends State<Categories> {
             ),
             const SizedBox(height: 16),
 
-            // Description
-            TextFormField(
-              controller: categoryDescriptionController,
-              maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-              ),
-            ),
+            // // Description
+            // TextFormField(
+            //   controller: controller.categoryDescriptionController,
+            //   maxLines: 3,
+            //   decoration: const InputDecoration(
+            //     labelText: 'Description',
+            //     border: OutlineInputBorder(),
+            //   ),
+            // ),
             const SizedBox(height: 16),
 
             // Image upload box
@@ -69,48 +55,57 @@ class _CategoriesPageState extends State<Categories> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  DropzoneView(
-                    cursor: CursorType.copy,
-                    mime: const [
-                      'image/jpeg',
-                      'image/png',
-                      'image/gif',
-                      'image/webp',
-                      'image/jpg',
-                    ],
-                    onCreated: (ctrl) => dropzoneController = ctrl,
-                    onDrop: (ev) async {
-                      final name = await dropzoneController.getFilename(ev);
-                      setState(() {
-                        uploadedFileName = name;
-                        isImageDropped = true;
-                      });
+                  // DropzoneView(
+                  //   cursor: CursorType.copy,
+                  //   mime: const [
+                  //     'image/jpeg',
+                  //     'image/png',
+                  //     'image/gif',
+                  //     'image/webp',
+                  //     'image/jpg',
+                  //   ],
+                  //   onCreated: (ctrl) => dropzoneController = ctrl,
+                  //   onDrop: (ev) async {
+                  //     await controller.handleDrop(ev, dropzoneController);
+                  //   },
+
+                  //   onError: (ev) => debugPrint('Dropzone error: $ev'),
+                  // ),
+                  GetBuilder<AddCategoryController>(
+                    builder: (_) {
+                      if (controller.selectedImageBytes == null) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(height: 8),
+                            OutlinedButton(
+                              onPressed: () => controller.selectImage(),
+                              child: const Text('Select Image'),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              controller.fileName ?? '',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Image.memory(
+                              controller.selectedImageBytes!,
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                            ),
+                          ],
+                        );
+                      }
                     },
-                    onError: (ev) => debugPrint('Dropzone error: $ev'),
                   ),
-                  if (!isImageDropped)
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          'assets/images/drag_and_drop.jpg',
-                          width: 50,
-                          height: 50,
-                        ),
-                        const SizedBox(height: 8),
-                        const Text('Drag and drop an image here'),
-                        const SizedBox(height: 8),
-                        OutlinedButton(
-                          onPressed:()=>controller.selectImage() ,
-                          child: const Text('Select Image'),
-                        ),
-                      ],
-                    )
-                  else
-                    Text(
-                      'Selected file: $uploadedFileName',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
                 ],
               ),
             ),
@@ -119,7 +114,13 @@ class _CategoriesPageState extends State<Categories> {
             // Submit button
             ElevatedButton(
               onPressed: () {
-                // TODO: handle category submit logic here
+                controller.category['name'] =
+                    controller.categoryNameController.text;
+                controller.createNewCategory(context);
+                setState(() {
+                  controller.categoryNameController.clear();
+                  controller.selectedImageBytes!.clear();
+                });
               },
               child: const Text('Add Category'),
             ),

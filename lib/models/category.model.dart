@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-class Welcome {
+class Category {
   int id;
   String name;
   String imageUrl;
   DateTime createdAt;
   DateTime updatedAt;
 
-  Welcome({
+  Category({
     required this.id,
     required this.name,
     required this.imageUrl,
@@ -15,13 +15,13 @@ class Welcome {
     required this.updatedAt,
   });
 
-  Welcome copyWith({
+  Category copyWith({
     int? id,
     String? name,
     String? imageUrl,
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) => Welcome(
+  }) => Category(
     id: id ?? this.id,
     name: name ?? this.name,
     imageUrl: imageUrl ?? this.imageUrl,
@@ -29,11 +29,11 @@ class Welcome {
     updatedAt: updatedAt ?? this.updatedAt,
   );
 
-  factory Welcome.fromRawJson(String str) => Welcome.fromJson(json.decode(str));
+  factory Category.fromRawJson(String str) => Category.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory Welcome.fromJson(Map<String, dynamic> json) => Welcome(
+  factory Category.fromJson(Map<String, dynamic> json) => Category(
     id: json["id"],
     name: json["name"],
     imageUrl: json["imageUrl"],
