@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // For formatting dates
+import 'package:intl/intl.dart'; 
 
 class Product {
   final int id;
@@ -115,11 +115,6 @@ class _ProductsState extends State<Products> {
             DataColumn(label: const Text('Select')),
             DataColumn(
               label: Text('Name'),
-
-              // Transform.rotate(
-              //   angle: 1.57,
-              //   child: Icon(Icons.compare_arrows_outlined),
-              // ),
               onSort: (i, asc) => _sort((p) => p.name.toLowerCase(), i, asc),
             ),
             DataColumn(label: const Text('Category')),

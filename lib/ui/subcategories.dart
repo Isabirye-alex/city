@@ -1,5 +1,7 @@
+import 'package:city/core/controllers/add_subcategory_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
+import 'package:get/get.dart';
 
 class Subcategories extends StatefulWidget {
   const Subcategories({super.key});
@@ -35,6 +37,7 @@ class _SubcategoriesState extends State<Subcategories> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(AddSubCategoryController());
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -99,58 +102,58 @@ class _SubcategoriesState extends State<Subcategories> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    DropzoneView(
-                      cursor: CursorType.copy,
-                      mime: const [
-                        'image/jpeg',
-                        'image/png',
-                        'image/gif',
-                        'image/webp',
-                        'image/jpg',
-                      ],
-                      onCreated: (ctrl) => dropzoneController = ctrl,
-                      onDrop: (ev) async {
-                        final name = await dropzoneController.getFilename(ev);
-                        setState(() {
-                          uploadedFileName = name;
-                          isImageDropped = true;
-                        });
+                    GetBuilder<AddSubCategoryController>(
+                      builder: (_) {
+                        if (controller.selectedImageBytes == null) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const SizedBox(height: 8),
+                              OutlinedButton(
+                                onPressed: () => controller.selectImage(),
+                                child: const Text('Select Image'),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                controller.fileName ?? '',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Image.memory(
+                                controller.selectedImageBytes!,
+                                width: 120,
+                                height: 120,
+                                fit: BoxFit.cover,
+                              ),
+                            ],
+                          );
+                        }
                       },
-                      onError: (ev) => debugPrint('Dropzone error: $ev'),
                     ),
-                    if (!isImageDropped)
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            'assets/images/drag_and_drop.jpg',
-                            width: 50,
-                            height: 50,
-                          ),
-                          const SizedBox(height: 8),
-                          const Text('Drag and drop an image here'),
-                          const SizedBox(height: 8),
-                          OutlinedButton(
-                            onPressed: pickImage,
-                            child: const Text('Select Image'),
-                          ),
-                        ],
-                      )
-                    else
-                      Text(
-                        'Selected file: $uploadedFileName',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
+                          const SizedBox(height: 32),
 
+              // Submit button
               ElevatedButton(
                 onPressed: () {
-                  // TODO: submit subcategory data
+                  controller.category['name'] =
+                      controller.categoryNameController.text;
+                  controller.createNewSubCategory(context);
+                  setState(() {
+                    controller.categoryNameController.clear();
+                    controller.selectedImageBytes!.clear();
+                  });
                 },
-                child: const Text('Add Subcategory'),
+                child: const Text('Add Sub Category'),
               ),
             ],
           ),

@@ -55,22 +55,6 @@ class _CategoriesPageState extends State<Categories> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // DropzoneView(
-                  //   cursor: CursorType.copy,
-                  //   mime: const [
-                  //     'image/jpeg',
-                  //     'image/png',
-                  //     'image/gif',
-                  //     'image/webp',
-                  //     'image/jpg',
-                  //   ],
-                  //   onCreated: (ctrl) => dropzoneController = ctrl,
-                  //   onDrop: (ev) async {
-                  //     await controller.handleDrop(ev, dropzoneController);
-                  //   },
-
-                  //   onError: (ev) => debugPrint('Dropzone error: $ev'),
-                  // ),
                   GetBuilder<AddCategoryController>(
                     builder: (_) {
                       if (controller.selectedImageBytes == null) {

@@ -1,5 +1,7 @@
+import 'package:city/core/controllers/add_brand_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
+import 'package:get/get.dart';
 
 class Brands extends StatefulWidget {
   const Brands({super.key});
@@ -27,6 +29,7 @@ class _BrandsState extends State<Brands> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(AddBrandController());
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -66,48 +69,61 @@ class _BrandsState extends State<Brands> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  DropzoneView(
-                    cursor: CursorType.copy,
-                    mime: const [
-                      'image/png',
-                      'image/jpeg',
-                      'image/jpg',
-                      'image/webp',
-                      'image/svg+xml',
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GetBuilder<AddBrandController>(
+                        builder: (_) {
+                          if (controller.selectedImageBytes == null) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(height: 8),
+                                OutlinedButton(
+                                  onPressed: () => controller.selectImage(),
+                                  child: const Text('Select Image'),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  controller.fileName ?? '',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Image.memory(
+                                  controller.selectedImageBytes!,
+                                  width: 120,
+                                  height: 120,
+                                  fit: BoxFit.cover,
+                                ),
+                              ],
+                            );
+                          }
+                        },
+                      ),
+                      OutlinedButton(
+                        onPressed: () {},
+                        child: Text('Change Image'),
+                      ),
                     ],
-                    onCreated: (ctrl) => dropzoneController = ctrl,
-                    onDrop: (ev) async {
-                      final name = await dropzoneController.getFilename(ev);
-                      setState(() {
-                        uploadedLogoName = name;
-                        logoDropped = true;
-                      });
-                    },
-                    onError: (ev) => debugPrint('Dropzone error: $ev'),
                   ),
-                  if (!logoDropped)
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          'assets/images/drag_and_drop.jpg',
-                          width: 50,
-                          height: 50,
-                        ),
-                        const SizedBox(height: 8),
-                        const Text('Drag and drop a logo image here'),
-                        const SizedBox(height: 8),
-                        OutlinedButton(
-                          onPressed: pickLogo,
-                          child: const Text('Select Logo'),
-                        ),
-                      ],
-                    )
-                  else
-                    Text(
-                      'Selected logo: $uploadedLogoName',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                  const SizedBox(height: 32),
+
+                  // Submit button
+                  ElevatedButton(
+                    onPressed: () {
+                      controller.category['name'] =
+                          controller.categoryNameController.text;
+                      controller.createNewBrand(context);
+                    },
+                    child: const Text('Add Brand'),
+                  ),
                 ],
               ),
             ),
@@ -116,7 +132,6 @@ class _BrandsState extends State<Brands> {
             // Submit Button
             ElevatedButton(
               onPressed: () {
-                // TODO: Handle submission
                 final name = nameController.text.trim();
                 final description = descriptionController.text.trim();
                 final logo = uploadedLogoName;
