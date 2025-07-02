@@ -11,7 +11,6 @@ class AddBrandController extends GetxController {
   final RxMap<String, dynamic> category = <String, dynamic>{}.obs;
   final categoryNameController = TextEditingController();
 
-
   Future<void> selectImage() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.image,

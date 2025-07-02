@@ -98,7 +98,7 @@ class _BrandsState extends State<Brands> {
                                 const SizedBox(height: 10),
                                 Image.memory(
                                   controller.selectedImageBytes!,
-                                  width: 120,
+                                  width: 200,
                                   height: 120,
                                   fit: BoxFit.cover,
                                 ),
@@ -108,45 +108,26 @@ class _BrandsState extends State<Brands> {
                         },
                       ),
                       OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (controller.selectedImageBytes != null) {
+                            controller.selectedImageBytes == null;
+                            controller.selectImage();
+                          }
+                        },
                         child: Text('Change Image'),
                       ),
                     ],
                   ),
                   const SizedBox(height: 32),
-
-                  // Submit button
-                  ElevatedButton(
-                    onPressed: () {
-                      controller.category['name'] =
-                          controller.categoryNameController.text;
-                      controller.createNewBrand(context);
-                    },
-                    child: const Text('Add Brand'),
-                  ),
                 ],
               ),
             ),
             const SizedBox(height: 32),
-
-            // Submit Button
             ElevatedButton(
               onPressed: () {
-                final name = nameController.text.trim();
-                final description = descriptionController.text.trim();
-                final logo = uploadedLogoName;
-
-                if (name.isEmpty || description.isEmpty || logo == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('All fields including logo are required'),
-                    ),
-                  );
-                  return;
-                }
-
-                // Submit brand to backend or controller
-                debugPrint('Brand added: $name, $description, logo: $logo');
+                controller.category['name'] =
+                    controller.categoryNameController.text;
+                controller.createNewBrand(context);
               },
               child: const Text('Add Brand'),
             ),
