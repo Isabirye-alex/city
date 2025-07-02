@@ -65,32 +65,6 @@ class AdminShell extends StatelessWidget {
             ),
       body: Column(
         children: [
-          // Header section for search bar and heading items
-          // Container(
-          //   padding: EdgeInsets.all(16),
-          //   color: Colors.grey[100],
-          // child: Row(
-          //   children: [
-          //     Expanded(
-          //       child: TextField(
-          //         decoration: InputDecoration(
-          //           hintText: 'Search...',
-          //           prefixIcon: Icon(Icons.search),
-          //           border: OutlineInputBorder(
-          //             borderRadius: BorderRadius.circular(8),
-          //           ),
-          //           filled: true,
-          //           fillColor: Colors.white,
-          //         ),
-          //       ),
-          //     ),
-          //     SizedBox(width: 16),
-          //     IconButton(icon: Icon(Icons.notifications), onPressed: () {}),
-          //     IconButton(icon: Icon(Icons.settings), onPressed: () {}),
-          //   ],
-          // ),
-          // ),
-          // Main content
           Expanded(
             child: Row(
               children: [

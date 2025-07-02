@@ -22,10 +22,13 @@ class PopUpDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Dialog(
+        backgroundColor: Colors.purpleAccent,
+        insetAnimationCurve: Curves.easeInOut,
+        insetAnimationDuration: Duration(milliseconds: 100),
         insetPadding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.05,
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        shape: RoundedRectangleBorder(),
         child: ConstrainedBox(
           constraints: BoxConstraints(
             // maxHeight: 400

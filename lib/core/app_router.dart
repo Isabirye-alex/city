@@ -1,4 +1,3 @@
-import 'package:city/features/add_product.dart';
 import 'package:city/ui/admin_shell.dart';
 import 'package:city/ui/analytics.dart';
 import 'package:city/ui/brands.dart';
@@ -15,6 +14,7 @@ import 'package:city/ui/settings.dart';
 import 'package:city/ui/subcategories.dart';
 import 'package:city/ui/users.dart';
 import 'package:city/ui/vendors.dart';
+import 'package:city/widgets/media/media_uploader.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
@@ -28,8 +28,11 @@ class AppRouter {
             path: '/dashboard',
             builder: (context, state) => DashboardPage(),
             routes: [
-              GoRoute(path: 'addproduct', builder: (contex, state)=>AddProduct()),
-            ]
+              GoRoute(
+                path: 'addproduct',
+                builder: (contex, state) => MediaUploader(),
+              ),
+            ],
           ),
           GoRoute(path: '/brands', builder: (context, state) => Brands()),
           GoRoute(
@@ -54,8 +57,8 @@ class AppRouter {
           GoRoute(path: '/analytics', builder: (context, state) => Analytics()),
           GoRoute(path: '/reports', builder: (context, state) => Reports()),
           GoRoute(path: '/settings', builder: (context, state) => Settings()),
+
           //Mini routes
-       
         ],
       ),
     ],

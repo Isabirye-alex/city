@@ -1,10 +1,9 @@
 import 'package:city/core/controllers/dashboard.controller.dart';
-import 'package:city/widgets/reusables/popup.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:go_router/go_router.dart';
 
 class Desktopwidget extends StatelessWidget {
   const Desktopwidget({super.key});
@@ -126,7 +125,7 @@ class Desktopwidget extends StatelessWidget {
                           ),
                           child: IconButton(
                             onPressed: () {
-                              showRegisterDialog(context);  
+                              context.go('/dashboard/addproduct');
                             },
                             icon: Icon(Icons.add, color: Colors.white),
                           ),
