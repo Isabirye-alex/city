@@ -1,8 +1,10 @@
 import 'package:city/core/controllers/dashboard.controller.dart';
+import 'package:city/widgets/reusables/popup.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 
 class Desktopwidget extends StatelessWidget {
   const Desktopwidget({super.key});
@@ -123,7 +125,9 @@ class Desktopwidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showRegisterDialog(context);  
+                            },
                             icon: Icon(Icons.add, color: Colors.white),
                           ),
                         ),

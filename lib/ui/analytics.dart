@@ -236,7 +236,7 @@ class ADataTable extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: SizedBox(
           width:
-              1000, // adjust width to fit all columns, or calculate dynamically
+              1000, 
           child: PaginatedDataTable2(
             headingTextStyle: TextStyle(
               fontSize: 14,

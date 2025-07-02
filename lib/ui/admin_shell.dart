@@ -29,6 +29,7 @@ class AdminShell extends StatelessWidget {
     {'label': 'Feedback', 'icon': Icons.feedback, 'route': '/feedback'},
     {'label': 'Help', 'icon': Icons.help, 'route': '/help'},
     {'label': 'Logout', 'icon': Icons.logout, 'route': '/logout'},
+    {'label': 'Product', 'icon': Icons.add, 'route': '/dashboard/addproduct'},
   ];
 
   @override
