@@ -1,6 +1,7 @@
+import 'package:city/core/controllers/upload_image_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
-
+import 'package:get/get.dart';
 class Categories extends StatefulWidget {
   const Categories({super.key});
 
@@ -13,6 +14,8 @@ class _CategoriesPageState extends State<Categories> {
   String? uploadedFileName;
   bool isImageDropped = false;
 
+  
+
   final TextEditingController categoryNameController = TextEditingController();
   final TextEditingController categoryDescriptionController =
       TextEditingController();
@@ -24,13 +27,11 @@ class _CategoriesPageState extends State<Categories> {
     super.dispose();
   }
 
-  Future<void> pickImage() async {
-    // Implement file picker if you want to allow clicking "Select Image" to open file picker
-    // For web you might integrate html.FileUploadInputElement, for mobile a plugin like image_picker
-  }
+
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(UploadImageController());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Category'),
@@ -100,7 +101,7 @@ class _CategoriesPageState extends State<Categories> {
                         const Text('Drag and drop an image here'),
                         const SizedBox(height: 8),
                         OutlinedButton(
-                          onPressed: pickImage,
+                          onPressed:()=>controller.selectImage() ,
                           child: const Text('Select Image'),
                         ),
                       ],

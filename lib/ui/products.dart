@@ -25,7 +25,6 @@ class Product {
   });
 }
 
-
 class Products extends StatefulWidget {
   const Products({super.key});
 
@@ -56,7 +55,6 @@ class _ProductsState extends State<Products> {
         createdAt: DateTime.now().subtract(Duration(days: index * 2)),
       );
     });
-
   }
 
   void _sort<T>(
@@ -116,7 +114,12 @@ class _ProductsState extends State<Products> {
           columns: [
             DataColumn(label: const Text('Select')),
             DataColumn(
-              label: const Text('Name'),
+              label: Text('Name'),
+
+              // Transform.rotate(
+              //   angle: 1.57,
+              //   child: Icon(Icons.compare_arrows_outlined),
+              // ),
               onSort: (i, asc) => _sort((p) => p.name.toLowerCase(), i, asc),
             ),
             DataColumn(label: const Text('Category')),
@@ -170,7 +173,6 @@ class ProductDataSource extends DataTableSource {
           ),
         ),
       ],
-
     );
   }
 
