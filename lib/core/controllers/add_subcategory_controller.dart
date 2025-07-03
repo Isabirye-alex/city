@@ -8,8 +8,9 @@ import 'package:http/http.dart' as http;
 class AddSubCategoryController extends GetxController {
   Uint8List? selectedImageBytes;
   String? fileName;
-  final RxMap<String, dynamic> category = <String, dynamic>{}.obs;
-  final categoryNameController = TextEditingController();
+  final RxMap<String, dynamic> subcategory = <String, dynamic>{}.obs;
+  final subcategoryNameController = TextEditingController();
+  final subcategoryDescriptionController = TextEditingController();
 
   Future<void> selectImage() async {
     final result = await FilePicker.platform.pickFiles(
@@ -26,10 +27,17 @@ class AddSubCategoryController extends GetxController {
 
   Future<void> createNewSubCategory(BuildContext context) async {
     try {
+      final parentId = subcategory['parentCategoryId']?.toString();
+      final name = subcategory['name'];
+      final desc = subcategory['description'];
+
       if (selectedImageBytes == null ||
           fileName == null ||
-          category['name'] == null) {
-        Get.snackbar('Validation', 'All fields including image must be filled');
+          subcategory['name'] == null) {
+        // Get.snackbar('Validation', 'All fields including image must be filled');
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('All fields are required')));
         return;
       }
 
@@ -37,7 +45,9 @@ class AddSubCategoryController extends GetxController {
       final request = http.MultipartRequest('POST', uri);
 
       // Add fields
-      request.fields['name'] = category['name'];
+      request.fields['name'] = name;
+      request.fields['category_id'] = parentId!;
+      request.fields['description'] = desc;
       request.files.add(
         http.MultipartFile.fromBytes(
           'image',
@@ -48,34 +58,38 @@ class AddSubCategoryController extends GetxController {
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
-      final Map<String, dynamic> data = jsonDecode(response.body);
+      // final Map<String, dynamic> data = jsonDecode(response.body);
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         // ✅ Clear the inputs and state
         selectedImageBytes = null;
         fileName = null;
-        category.clear();
-        categoryNameController.clear();
-        update(); // Notify the UI to refresh (e.g., remove image preview)
-        Get.showSnackbar(
-          GetSnackBar(
-            title: 'Success',
-            message: 'Sub category added successfully!',
-            duration: const Duration(seconds: 3),
-            backgroundColor: Colors.green,
-          ),
-        );
+        subcategory.clear();
+        subcategoryDescriptionController.clear();
+        subcategoryNameController.clear();
+        update();
+        // update(); // Notify the UI to refresh (e.g., remove image preview)
+        // Get.showSnackbar(
+        //   GetSnackBar(
+        //     title: 'Success',
+        //     message: 'Sub category added successfully!',
+        //     duration: const Duration(seconds: 3),
+        //     backgroundColor: Colors.green,
+        //   ),
+        // );
       } else {
-        Get.snackbar(
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          'Failed',
-          data['message'] ?? 'Unknown error',
-        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text(data['message'] ?? 'Unknown error')),
+        // );
+        // Get.snackbar(
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.red,
+        //   'Failed',
+        //   data['message'] ?? 'Unknown error',
+        // );
       }
     } catch (e) {
       Get.snackbar('Error', 'Could not add new category: $e');
     }
   }
-
 }

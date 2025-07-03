@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:city/models/category.model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,6 +11,14 @@ class AddCategoryController extends GetxController {
   String? fileName;
   final RxMap<String, dynamic> category = <String, dynamic>{}.obs;
   final categoryNameController = TextEditingController();
+  final RxList<Category> categories = <Category>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    getCategories();
+  }
+
 
   /// For File Picker
   Future<void> selectImage() async {
@@ -79,7 +87,26 @@ class AddCategoryController extends GetxController {
       Get.snackbar('Error', 'Could not add new category: $e');
     }
   }
-Fut
 
+Future<void> getCategories() async {
+    try {
+      final uri = Uri.parse('http://localhost:3000/categories');
+      final response = await http.get(uri);
 
+      if (response.statusCode == 200 ||response.statusCode == 201) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final List<dynamic> jsonList = data['data'];
+
+        final List<Category> loadedCategories = jsonList
+            .map((jsonItem) => Category.fromJson(jsonItem))
+            .toList();
+
+        categories.assignAll(loadedCategories); // Update observable list
+      } else {
+        throw Exception('Failed to load categories: ${response.body}');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Error fetching categories: $e');
+    }
+  }
 }

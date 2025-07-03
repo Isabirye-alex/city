@@ -1,4 +1,6 @@
+import 'package:city/core/controllers/add_category_controller.dart';
 import 'package:city/core/controllers/add_subcategory_controller.dart';
+import 'package:city/models/category.model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
@@ -31,12 +33,9 @@ class _SubcategoriesState extends State<Subcategories> {
     super.dispose();
   }
 
-  Future<void> pickImage() async {
-    // Implement file picker if needed
-  }
-
   @override
   Widget build(BuildContext context) {
+    final categoryController = Get.put(AddCategoryController());
     final controller = Get.put(AddSubCategoryController());
     return Scaffold(
       appBar: AppBar(
@@ -53,28 +52,39 @@ class _SubcategoriesState extends State<Subcategories> {
             children: [
               SizedBox(height: 30),
               // Parent Category Dropdown
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Select Parent Category',
-                  border: OutlineInputBorder(),
-                ),
-                value: selectedCategory,
-                items: dummyCategories
-                    .map(
-                      (cat) => DropdownMenuItem(value: cat, child: Text(cat)),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedCategory = value;
-                  });
-                },
-              ),
+              Obx(() {
+                return DropdownButtonFormField<Category>(
+                  decoration: const InputDecoration(
+                    labelText: 'Select Parent Category',
+                    border: OutlineInputBorder(),
+                  ),
+                  value: selectedCategory != null
+                      ? categoryController.categories.firstWhereOrNull(
+                          (cat) => cat.name == selectedCategory,
+                        )
+                      : null,
+                  items: categoryController.categories
+                      .map(
+                        (cat) => DropdownMenuItem<Category>(
+                          value: cat,
+                          child: Text(cat.name),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (Category? value) {
+                    setState(() {
+                      selectedCategory = value?.name;
+                      controller.subcategory['parentCategoryId'] = value?.id;
+                    });
+                  },
+                );
+              }),
+
               const SizedBox(height: 16),
 
               // Subcategory Name
               TextFormField(
-                controller: subcategoryNameController,
+                controller: controller.subcategoryNameController,
                 decoration: const InputDecoration(
                   labelText: 'Subcategory Name',
                   border: OutlineInputBorder(),
@@ -84,7 +94,7 @@ class _SubcategoriesState extends State<Subcategories> {
 
               // Description
               TextFormField(
-                controller: subcategoryDescriptionController,
+                controller: controller.subcategoryDescriptionController,
                 maxLines: 3,
                 decoration: const InputDecoration(
                   labelText: 'Description',
@@ -103,7 +113,6 @@ class _SubcategoriesState extends State<Subcategories> {
                   alignment: Alignment.center,
                   children: [
                     Row(
-                     
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         GetBuilder<AddSubCategoryController>(
@@ -160,13 +169,12 @@ class _SubcategoriesState extends State<Subcategories> {
               // Submit button
               ElevatedButton(
                 onPressed: () {
-                  controller.category['name'] =
-                      controller.categoryNameController.text;
+                  controller.subcategory['name'] =
+                      controller.subcategoryNameController.text;
+                  controller.subcategory['description'] =
+                      controller.subcategoryDescriptionController.text;
+                      
                   controller.createNewSubCategory(context);
-                  setState(() {
-                    controller.categoryNameController.clear();
-                    controller.selectedImageBytes!.clear();
-                  });
                 },
                 child: const Text('Add Sub Category'),
               ),
