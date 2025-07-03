@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:city/models/subcategory.model.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +13,7 @@ class AddSubCategoryController extends GetxController {
   final RxMap<String, dynamic> subcategory = <String, dynamic>{}.obs;
   final subcategoryNameController = TextEditingController();
   final subcategoryDescriptionController = TextEditingController();
+  final RxList<SubCategoryModel> subcategories = <SubCategoryModel>[].obs;
 
   Future<void> selectImage() async {
     final result = await FilePicker.platform.pickFiles(
@@ -58,38 +61,34 @@ class AddSubCategoryController extends GetxController {
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
-      // final Map<String, dynamic> data = jsonDecode(response.body);
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        // ✅ Clear the inputs and state
         selectedImageBytes = null;
         fileName = null;
         subcategory.clear();
         subcategoryDescriptionController.clear();
         subcategoryNameController.clear();
         update();
-        // update(); // Notify the UI to refresh (e.g., remove image preview)
-        // Get.showSnackbar(
-        //   GetSnackBar(
-        //     title: 'Success',
-        //     message: 'Sub category added successfully!',
-        //     duration: const Duration(seconds: 3),
-        //     backgroundColor: Colors.green,
-        //   ),
-        // );
-      } else {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text(data['message'] ?? 'Unknown error')),
-        // );
-        // Get.snackbar(
-        //   snackPosition: SnackPosition.BOTTOM,
-        //   backgroundColor: Colors.red,
-        //   'Failed',
-        //   data['message'] ?? 'Unknown error',
-        // );
-      }
+      } else {}
     } catch (e) {
       Get.snackbar('Error', 'Could not add new category: $e');
+    }
+  }
+
+  Future<void> getSubcategories() async {
+    try {
+      final uri = Uri.parse('http://localhost:3000/subcategories');
+      final response = await http.get(uri);
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final List<dynamic> jsonList = data['data'];
+        final List<SubCategoryModel> loadedSubCategories = jsonList
+            .map((e) => SubCategoryModel.fromJson(e))
+            .toList();
+        subcategories.assignAll(loadedSubCategories);
+      }
+    } catch (e) {
+      throw Exception('Erro fetching subcategories: $e');
     }
   }
 }

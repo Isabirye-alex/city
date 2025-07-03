@@ -1,4 +1,8 @@
+import 'package:city/core/controllers/add_category_controller.dart';
 import 'package:city/core/controllers/add_product_controller.dart';
+import 'package:city/core/controllers/add_subcategory_controller.dart';
+import 'package:city/models/category.model.dart';
+import 'package:city/models/subcategory.model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,9 +14,13 @@ class MediaUploader extends StatefulWidget {
 }
 
 class _MediaUploaderState extends State<MediaUploader> {
+  String? selectedCategory;
+  String? selectedSubCategory;
   @override
   Widget build(BuildContext context) {
     final mediaController = Get.put(AddProductController());
+    final categoryController = Get.put(AddCategoryController());
+    final subcategoryController = Get.put(AddSubCategoryController());
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add New Product"),
@@ -25,6 +33,7 @@ class _MediaUploaderState extends State<MediaUploader> {
           children: [
             // Product Name
             TextFormField(
+              controller: mediaController.nameController,
               decoration: const InputDecoration(
                 labelText: 'Product Name',
                 border: OutlineInputBorder(),
@@ -34,6 +43,7 @@ class _MediaUploaderState extends State<MediaUploader> {
 
             // Description
             TextFormField(
+              controller: mediaController.descriptionController,
               decoration: const InputDecoration(
                 labelText: 'Description',
                 border: OutlineInputBorder(),
@@ -43,30 +53,62 @@ class _MediaUploaderState extends State<MediaUploader> {
             const SizedBox(height: 16),
 
             // Category Dropdown
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
-                labelText: 'Category',
-                border: OutlineInputBorder(),
-              ),
-              items: ['Electronics', 'Clothing', 'Books', 'Accessories']
-                  .map((cat) => DropdownMenuItem(value: cat, child: Text(cat)))
-                  .toList(),
-              onChanged: (value) {},
-            ),
-            const SizedBox(height: 16),
+            Obx(() {
+              return DropdownButtonFormField<Category>(
+                decoration: const InputDecoration(
+                  labelText: 'Select Parent Category',
+                  border: OutlineInputBorder(),
+                ),
+                value: selectedCategory != null
+                    ? categoryController.categories.firstWhereOrNull(
+                        (cat) => cat.name == selectedCategory,
+                      )
+                    : null,
+                items: categoryController.categories
+                    .map(
+                      (cat) => DropdownMenuItem<Category>(
+                        value: cat,
+                        child: Text(cat.name),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (Category? value) {
+                  setState(() {
+                    selectedCategory = value?.name;
+                    mediaController.products['parentCategoryId'] = value?.id;
+                  });
+                },
+              );
+            }),
 
             // Subcategory Dropdown
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
-                labelText: 'Subcategory',
-                border: OutlineInputBorder(),
-              ),
-              items: ['Mobiles', 'Laptops', 'Accessories', 'Chargers', 'Iphone']
-                  .map((sub) => DropdownMenuItem(value: sub, child: Text(sub)))
-                  .toList(),
-              onChanged: (value) {},
-            ),
-            const SizedBox(height: 16),
+            Obx(() {
+              return DropdownButtonFormField<SubCategoryModel>(
+                decoration: const InputDecoration(
+                  labelText: 'Select Parent Sub category',
+                  border: OutlineInputBorder(),
+                ),
+                value: selectedSubCategory != null
+                    ? subcategoryController.subcategories.firstWhereOrNull(
+                        (cat) => cat.name == selectedSubCategory,
+                      )
+                    : null,
+                items: subcategoryController.subcategories
+                    .map(
+                      (cat) => DropdownMenuItem<SubCategoryModel>(
+                        value: cat,
+                        child: Text(cat.name),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (SubCategoryModel? value) {
+                  setState(() {
+                    selectedSubCategory = value?.name;
+                    mediaController.products['parentSubCategoryId'] = value?.id;
+                  });
+                },
+              );
+            }),
 
             // Price
             TextFormField(
@@ -166,8 +208,14 @@ class _MediaUploaderState extends State<MediaUploader> {
 
             ElevatedButton(
               onPressed: () {
-                mediaController.category['name'] =
-                    mediaController.categoryNameController.text;
+                mediaController.products['name'] =
+                    mediaController.nameController;
+                mediaController.products['descritpion'] =
+                    mediaController.descriptionController;
+                mediaController.products['quantity'] =
+                    mediaController.quantityController;
+                mediaController.products['price'] =
+                    mediaController.priceController;
                 mediaController.createProduct(context);
               },
               child: const Text('Add Product'),

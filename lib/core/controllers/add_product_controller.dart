@@ -1,5 +1,5 @@
-import 'dart:convert';
 import 'dart:typed_data';
+import 'package:city/models/product.model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -8,11 +8,14 @@ import 'package:http/http.dart' as http;
 
 class AddProductController extends GetxController {
   Uint8List? selectedImageBytes;
-  
+
   String? fileName;
-  final RxMap<String, dynamic> category = <String, dynamic>{}.obs;
-  final categoryNameController = TextEditingController();
-  // final categoryDescriptionController = TextEditingController();
+  final RxMap<String, dynamic> products = <String, dynamic>{}.obs;
+  final RxList<Product> product = <Product>[].obs;
+  final descriptionController = TextEditingController();
+  final nameController = TextEditingController();
+  final priceController = TextEditingController();
+  final quantityController = TextEditingController();
 
   /// For File Picker
   Future<void> selectImage() async {
@@ -30,9 +33,15 @@ class AddProductController extends GetxController {
 
   Future<void> createProduct(BuildContext context) async {
     try {
+      final parentId = products['parentCategoryId'].toString();
+      final childId = products['parentSubCategoryId'].toString();
+      final name = products['name'];
+      final desc = products['description'];
       if (selectedImageBytes == null ||
           fileName == null ||
-          category['name'] == null) {
+          products['name'] == null ||
+          products['price'] == null ||
+          products['quantity'] == null) {
         Get.snackbar('Validation', 'All fields including image must be filled');
         return;
       }
@@ -41,7 +50,10 @@ class AddProductController extends GetxController {
       final request = http.MultipartRequest('POST', uri);
 
       // Add fields
-      request.fields['name'] = category['name'];
+      request.fields['name'] = name;
+      request.fields['category_id'] = parentId;
+      request.fields['subcategory_id'] = childId;
+      request.fields['description'] = desc;
       request.files.add(
         http.MultipartFile.fromBytes(
           'image',
@@ -52,32 +64,16 @@ class AddProductController extends GetxController {
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
-      final Map<String, dynamic> data = jsonDecode(response.body);
-
       if (response.statusCode == 201 || response.statusCode == 200) {
-        // ✅ Clear the inputs and state
         selectedImageBytes = null;
         fileName = null;
-        category.clear();
-        categoryNameController.clear();
-        update(); 
-        Get.showSnackbar(
-          GetSnackBar(
-            title: 'Success',
-            message: 'Product added successfully!',
-            duration: const Duration(seconds: 3),
-            backgroundColor: Colors.green,
-          ),
-        );
-      } else {
-        Get.snackbar(
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          'Failed',
-          data['message'] ?? 'Unknown error',
-        );
-        // Get.snackbar('Failed', 'Server responded with ${response.statusCode}');
-      }
+        products.clear();
+        descriptionController.clear();
+        quantityController.clear();
+        priceController.clear();
+        nameController.clear();
+        update();
+      } else {}
     } catch (e) {
       Get.snackbar('Error', 'Could not add new category: $e');
     }

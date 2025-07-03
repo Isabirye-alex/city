@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-class Welcome {
+class SubCategoryModel {
   int id;
   String name;
   String description;
@@ -8,7 +8,7 @@ class Welcome {
   int categoryId;
   String categoryName;
 
-  Welcome({
+  SubCategoryModel({
     required this.id,
     required this.name,
     required this.description,
@@ -17,14 +17,14 @@ class Welcome {
     required this.categoryName,
   });
 
-  Welcome copyWith({
+  SubCategoryModel copyWith({
     int? id,
     String? name,
     String? description,
     String? imageUrl,
     int? categoryId,
     String? categoryName,
-  }) => Welcome(
+  }) => SubCategoryModel(
     id: id ?? this.id,
     name: name ?? this.name,
     description: description ?? this.description,
@@ -33,11 +33,11 @@ class Welcome {
     categoryName: categoryName ?? this.categoryName,
   );
 
-  factory Welcome.fromRawJson(String str) => Welcome.fromJson(json.decode(str));
+  factory SubCategoryModel.fromRawJson(String str) => SubCategoryModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory Welcome.fromJson(Map<String, dynamic> json) => Welcome(
+  factory SubCategoryModel.fromJson(Map<String, dynamic> json) => SubCategoryModel(
     id: json["id"],
     name: json["name"],
     description: json["description"],
