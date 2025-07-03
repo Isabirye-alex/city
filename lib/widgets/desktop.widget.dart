@@ -1,4 +1,7 @@
+
 import 'package:city/core/controllers/dashboard.controller.dart';
+import 'package:city/core/controllers/product_controller.dart';
+import 'package:city/models/product.model.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -206,7 +209,8 @@ class Desktopwidget extends StatelessWidget {
           SizedBox(height: 20),
           Container(
             height: 500,
-            margin: EdgeInsets.symmetric(horizontal: 8),
+            padding: EdgeInsets.all(4),
+            margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: ADataTable(),
           ),
         ],
@@ -215,108 +219,33 @@ class Desktopwidget extends StatelessWidget {
   }
 }
 
-class ADataTable extends StatelessWidget {
-  const ADataTable({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final List<DataColumn> columns = [
-      DataColumn(label: Text('Image')),
-      DataColumn(label: Text('Product Name')),
-      DataColumn(label: Text('Product Category')),
-      DataColumn(label: Text('Product subcategory')),
-      DataColumn(label: Text('Products in Stock')),
-      DataColumn(label: Text('Featured Product')),
-      DataColumn(label: Text('Price')),
-    ];
-
-    final DataTableSource source = ADataTableSource();
-
-    return Container(
-      height: 500,
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SizedBox(
-          width:
-              1000, // adjust width to fit all columns, or calculate dynamically
-          child: PaginatedDataTable2(
-            headingTextStyle: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            dataRowHeight: 40,
-            sortArrowAlwaysVisible: true,
-            sortArrowIcon: Icons.compare_arrows_outlined,
-            sortAscending: true,
-            showCheckboxColumn: true,
-            scrollController: ScrollController(),
-            checkboxHorizontalMargin: 4.0,
-            showFirstLastButtons: true,
-            columns: columns,
-            source: source,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class ADataTableSource extends DataTableSource {
-  final List<Map<String, dynamic>> _data = List.generate(200, (index) {
-    final products = [
-      {
-        'image': 'Not Available',
-        'Product Name': 'Laptop',
-        'Product Category': 'Electronics',
-        'Product subcategory': 'Computers',
-        'Products in Stock': 15,
-        'Featured Product': 'Yes',
-        'Price': '\$1200.00',
-      },
-      {
-        'image': 'Not Available',
-        'Product Name': 'Smartphone',
-        'Product Category': 'Electronics',
-        'Product subcategory': 'Mobile Phones',
-        'Products in Stock': 30,
-        'Featured Product': 'No',
-        'Price': '\$800.00',
-      },
-      {
-        'image': 'Not Available',
-        'Product Name': 'Headphones',
-        'Product Category': 'Accessories',
-        'Product subcategory': 'Audio',
-        'Products in Stock': 50,
-        'Featured Product': 'Yes',
-        'Price': '\$150.00',
-      },
-    ];
-    final product = products[index % products.length];
-    // Optionally, make each row unique
-    return {
-      ...product,
-      'Product Name': '${product['Product Name']} #${index + 1}',
-      'Products in Stock': (product['Products in Stock'] as int) + index,
-      'Price': '\$${(100 + index * 30).toStringAsFixed(2)}',
-    };
-  });
+  final List<Product> products;
+
+  ADataTableSource(this.products);
 
   @override
   DataRow? getRow(int index) {
-    if (index >= _data.length) return null;
-    final row = _data[index];
-    return DataRow(
+    if (index >= products.length) return null;
+    final product = products[index];
+
+    return DataRow.byIndex(
+      index: index,
       cells: [
-        DataCell(Text(row['image'].toString())),
-        DataCell(Text(row['Product Name'].toString())),
-        DataCell(Text(row['Product Category'].toString())),
-        DataCell(Text(row['Product subcategory'].toString())),
-        DataCell(Text(row['Products in Stock'].toString())),
-        DataCell(Text(row['Featured Product'].toString())),
-        DataCell(Text(row['Price'].toString())),
+        DataCell(
+          Image.network(
+            product.imageUrl,
+            width: 30,
+            height: 30,
+            errorBuilder: (_, __, ___) => Icon(Icons.broken_image),
+          ),
+        ),
+        DataCell(Text(product.name)),
+        DataCell(Text(product.categoryName)),
+        DataCell(Text(product.subcategoryName)),
+        DataCell(Text(product.stock.toString())),
+        DataCell(Text(product.isFeatured == 1 ? 'Yes' : 'No')),
+        DataCell(Text('UGX ${product.price}')),
       ],
     );
   }
@@ -325,12 +254,63 @@ class ADataTableSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => _data.length;
+  int get rowCount => products.length;
 
   @override
   int get selectedRowCount => 0;
 }
 
+class ADataTable extends StatelessWidget {
+  const ADataTable({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final ProductController productController = Get.put(ProductController());
+    productController.getProducts();
+
+    return Obx(() {
+      final DataTableSource source = ADataTableSource(
+        productController.product.value,
+      );
+
+      return Container(
+        height: 500,
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: PaginatedDataTable2(
+              headingTextStyle: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+              dataRowHeight: 40,
+              sortArrowAlwaysVisible: true,
+              sortArrowIcon: Icons.compare_arrows_outlined,
+              sortAscending: true,
+              showCheckboxColumn: false,
+              scrollController: ScrollController(),
+              checkboxHorizontalMargin: 4.0,
+              showFirstLastButtons: true,
+              columns: const [
+                DataColumn(label: Text('Image')),
+                DataColumn(label: Text('Product Name')),
+                DataColumn(label: Text('Category')),
+                DataColumn(label: Text('Subcategory')),
+                DataColumn(label: Text('Stock')),
+                DataColumn(label: Text('Featured')),
+                DataColumn(label: Text('Price')),
+              ],
+              source: source,
+            ),
+          ),
+        ),
+      );
+    });
+  }
+}
 class APieChart extends StatelessWidget {
   const APieChart({super.key});
 

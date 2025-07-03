@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:another_flushbar/flushbar.dart';
@@ -58,7 +60,6 @@ class CategoryController extends GetxController {
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
-      final Map<String, dynamic> data = jsonDecode(response.body);
       if (response.statusCode == 201 || response.statusCode == 200) {
         // ✅ Clear the inputs and state
         selectedImageBytes = null;
@@ -77,16 +78,28 @@ class CategoryController extends GetxController {
           flushbarPosition: FlushbarPosition.TOP,
         ).show(context);
       } else {
-        Get.snackbar(
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          'Failed',
-          data['message'] ?? 'Unknown error',
-        );
-        // Get.snackbar('Failed', 'Server responded with ${response.statusCode}');
+        Flushbar(
+          leftBarIndicatorColor: Colors.green,
+          shouldIconPulse: true,
+          icon: Icon(Icons.check_circle, color: Colors.green, size: 30),
+          message: 'Error, Un knwon error occurred',
+          duration: Duration(seconds: 4),
+          margin: EdgeInsets.only(top: 50),
+          borderRadius: BorderRadius.circular(8),
+          flushbarPosition: FlushbarPosition.TOP,
+        ).show(context);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Could not add new category: $e');
+      Flushbar(
+        leftBarIndicatorColor: Colors.green,
+        shouldIconPulse: true,
+        icon: Icon(Icons.check_circle, color: Colors.green, size: 30),
+        message: 'Error, Could not create new product',
+        duration: Duration(seconds: 4),
+        margin: EdgeInsets.only(top: 50),
+        borderRadius: BorderRadius.circular(8),
+        flushbarPosition: FlushbarPosition.TOP,
+      ).show(context);
     }
   }
 
@@ -103,12 +116,40 @@ class CategoryController extends GetxController {
             .map((jsonItem) => Category.fromJson(jsonItem))
             .toList();
 
-        categories.assignAll(loadedCategories); // Update observable list
+        categories.assignAll(loadedCategories);
+        Flushbar(
+          leftBarIndicatorColor: Colors.green,
+          shouldIconPulse: true,
+          icon: Icon(Icons.check_circle, color: Colors.green, size: 30),
+          message: 'Success, Category successfully added',
+          duration: Duration(seconds: 4),
+          margin: EdgeInsets.only(top: 50),
+          borderRadius: BorderRadius.circular(8),
+          flushbarPosition: FlushbarPosition.TOP,
+        ).show(Get.context!); // Update observable list
       } else {
-        throw Exception('Failed to load categories: ${response.body}');
+        Flushbar(
+          leftBarIndicatorColor: Colors.green,
+          shouldIconPulse: true,
+          icon: Icon(Icons.check_circle, color: Colors.green, size: 30),
+          message: 'Error, Un known error occurred',
+          duration: Duration(seconds: 4),
+          margin: EdgeInsets.only(top: 50),
+          borderRadius: BorderRadius.circular(8),
+          flushbarPosition: FlushbarPosition.TOP,
+        ).show(Get.context!);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Error fetching categories: $e');
+      Flushbar(
+        leftBarIndicatorColor: Colors.green,
+        shouldIconPulse: true,
+        icon: Icon(Icons.check_circle, color: Colors.green, size: 30),
+        message: 'Error, Could not retrieve category $e',
+        duration: Duration(seconds: 4),
+        margin: EdgeInsets.only(top: 50),
+        borderRadius: BorderRadius.circular(8),
+        flushbarPosition: FlushbarPosition.TOP,
+      ).show(Get.context!);
     }
   }
 }
