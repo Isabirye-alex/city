@@ -36,7 +36,7 @@ class _SubcategoriesState extends State<Subcategories> {
   @override
   Widget build(BuildContext context) {
     final categoryController = Get.put(CategoryController());
-    final controller = Get.put(AddSubCategoryController());
+    final controller = Get.put(SubCategoryController());
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -115,7 +115,7 @@ class _SubcategoriesState extends State<Subcategories> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        GetBuilder<AddSubCategoryController>(
+                        GetBuilder<SubCategoryController>(
                           builder: (_) {
                             if (controller.selectedImageBytes == null) {
                               return Column(

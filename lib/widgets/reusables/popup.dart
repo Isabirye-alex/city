@@ -1,4 +1,4 @@
-import 'package:city/widgets/media/media_uploader.dart';
+import 'package:city/widgets/media/product_uploader.dart';
 import 'package:flutter/material.dart';
 
 // This widget is used to show a dialog for user registration.
@@ -9,7 +9,7 @@ void showRegisterDialog(BuildContext context) {
     barrierDismissible: true,
     barrierColor: Colors.black.withAlpha(70),
     builder: (BuildContext context) {
-      return const PopUpDialog(child: MediaUploader());
+      return const PopUpDialog(child: ProductUploader());
     },
   );
 }

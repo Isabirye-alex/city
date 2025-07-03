@@ -14,7 +14,7 @@ import 'package:city/ui/settings.dart';
 import 'package:city/ui/subcategories.dart';
 import 'package:city/ui/users.dart';
 import 'package:city/ui/vendors.dart';
-import 'package:city/widgets/media/media_uploader.dart';
+import 'package:city/widgets/media/product_uploader.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
@@ -30,7 +30,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: 'addproduct',
-                builder: (contex, state) => MediaUploader(),
+                builder: (contex, state) => ProductUploader(),
               ),
             ],
           ),

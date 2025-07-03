@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class AddSubCategoryController extends GetxController {
+class SubCategoryController extends GetxController {
   Uint8List? selectedImageBytes;
   String? fileName;
   final RxMap<String, dynamic> subcategory = <String, dynamic>{}.obs;

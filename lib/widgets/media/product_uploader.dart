@@ -6,21 +6,21 @@ import 'package:city/models/subcategory.model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class MediaUploader extends StatefulWidget {
-  const MediaUploader({super.key});
+class ProductUploader extends StatefulWidget {
+  const ProductUploader({super.key});
 
   @override
-  State<MediaUploader> createState() => _MediaUploaderState();
+  State<ProductUploader> createState() => _ProductUploaderState();
 }
 
-class _MediaUploaderState extends State<MediaUploader> {
+class _ProductUploaderState extends State<ProductUploader> {
   String? selectedCategory;
   String? selectedSubCategory;
 
   @override
   void initState() {
     super.initState();
-    final subController = Get.put(AddSubCategoryController());
+    final subController = Get.put(SubCategoryController());
     subController.getSubcategories();
   }
 
@@ -28,7 +28,7 @@ class _MediaUploaderState extends State<MediaUploader> {
   Widget build(BuildContext context) {
     final mediaController = Get.put(ProductController());
     final categoryController = Get.put(CategoryController());
-    final subcategoryController = Get.put(AddSubCategoryController());
+    final subcategoryController = Get.put(SubCategoryController());
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add New Product"),
@@ -141,10 +141,17 @@ class _MediaUploaderState extends State<MediaUploader> {
             const SizedBox(height: 16),
 
             // Toggle: Featured
-            SwitchListTile(
-              value: true,
-              onChanged: (val) {},
-              title: const Text('Featured Product'),
+            Obx(
+              () => SwitchListTile(
+                value: mediaController.products['is_featured'] == true,
+                onChanged: (val) {
+                  mediaController.products['is_featured'] = val;
+                },
+                title: const Text('Featured Product'),
+                activeColor: Colors.green,
+                inactiveThumbColor: Colors.red,
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
             ),
 
             // Image Uploader
