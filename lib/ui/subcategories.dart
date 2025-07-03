@@ -1,5 +1,5 @@
-import 'package:city/core/controllers/add_category_controller.dart';
-import 'package:city/core/controllers/add_subcategory_controller.dart';
+import 'package:city/core/controllers/category_controller.dart';
+import 'package:city/core/controllers/subcategory_controller.dart';
 import 'package:city/models/category.model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
@@ -35,7 +35,7 @@ class _SubcategoriesState extends State<Subcategories> {
 
   @override
   Widget build(BuildContext context) {
-    final categoryController = Get.put(AddCategoryController());
+    final categoryController = Get.put(CategoryController());
     final controller = Get.put(AddSubCategoryController());
     return Scaffold(
       appBar: AppBar(
@@ -173,7 +173,7 @@ class _SubcategoriesState extends State<Subcategories> {
                       controller.subcategoryNameController.text;
                   controller.subcategory['description'] =
                       controller.subcategoryDescriptionController.text;
-                      
+
                   controller.createNewSubCategory(context);
                 },
                 child: const Text('Add Sub Category'),

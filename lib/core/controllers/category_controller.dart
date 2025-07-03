@@ -1,16 +1,26 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:another_flushbar/flushbar.dart';
+import 'package:city/models/category.model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class AddBrandController extends GetxController {
+class CategoryController extends GetxController {
   Uint8List? selectedImageBytes;
   String? fileName;
   final RxMap<String, dynamic> category = <String, dynamic>{}.obs;
   final categoryNameController = TextEditingController();
+  final RxList<Category> categories = <Category>[].obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    getCategories();
+  }
+
+  /// For File Picker
   Future<void> selectImage() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.image,
@@ -24,7 +34,7 @@ class AddBrandController extends GetxController {
     }
   }
 
-  Future<void> createNewBrand(BuildContext context) async {
+  Future<void> createNewCategory(BuildContext context) async {
     try {
       if (selectedImageBytes == null ||
           fileName == null ||
@@ -33,8 +43,10 @@ class AddBrandController extends GetxController {
         return;
       }
 
-      final uri = Uri.parse('http://localhost:3000/brands');
+      final uri = Uri.parse('http://localhost:3000/categories');
       final request = http.MultipartRequest('POST', uri);
+
+      // Add fields
       request.fields['name'] = category['name'];
       request.files.add(
         http.MultipartFile.fromBytes(
@@ -47,7 +59,6 @@ class AddBrandController extends GetxController {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final Map<String, dynamic> data = jsonDecode(response.body);
-
       if (response.statusCode == 201 || response.statusCode == 200) {
         // ✅ Clear the inputs and state
         selectedImageBytes = null;
@@ -55,14 +66,16 @@ class AddBrandController extends GetxController {
         category.clear();
         categoryNameController.clear();
         update(); // Notify the UI to refresh (e.g., remove image preview)
-        Get.showSnackbar(
-          GetSnackBar(
-            title: 'Success',
-            message: 'Brand added successfully!',
-            duration: const Duration(seconds: 3),
-            backgroundColor: Colors.green,
-          ),
-        );
+        Flushbar(
+          leftBarIndicatorColor: Colors.green,
+          shouldIconPulse: true,
+          icon: Icon(Icons.check_circle, color: Colors.green, size: 30),
+          message: 'Success, Category successfully added',
+          duration: Duration(seconds: 4),
+          margin: EdgeInsets.only(top: 50),
+          borderRadius: BorderRadius.circular(8),
+          flushbarPosition: FlushbarPosition.TOP,
+        ).show(context);
       } else {
         Get.snackbar(
           snackPosition: SnackPosition.BOTTOM,
@@ -74,6 +87,28 @@ class AddBrandController extends GetxController {
       }
     } catch (e) {
       Get.snackbar('Error', 'Could not add new category: $e');
+    }
+  }
+
+  Future<void> getCategories() async {
+    try {
+      final uri = Uri.parse('http://localhost:3000/categories');
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final List<dynamic> jsonList = data['data'];
+
+        final List<Category> loadedCategories = jsonList
+            .map((jsonItem) => Category.fromJson(jsonItem))
+            .toList();
+
+        categories.assignAll(loadedCategories); // Update observable list
+      } else {
+        throw Exception('Failed to load categories: ${response.body}');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Error fetching categories: $e');
     }
   }
 }

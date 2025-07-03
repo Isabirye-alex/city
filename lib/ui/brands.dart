@@ -1,4 +1,4 @@
-import 'package:city/core/controllers/add_brand_controller.dart';
+import 'package:city/core/controllers/brand_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
@@ -29,7 +29,7 @@ class _BrandsState extends State<Brands> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AddBrandController());
+    final controller = Get.put(BrandController());
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -72,7 +72,7 @@ class _BrandsState extends State<Brands> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      GetBuilder<AddBrandController>(
+                      GetBuilder<BrandController>(
                         builder: (_) {
                           if (controller.selectedImageBytes == null) {
                             return Column(

@@ -1,6 +1,6 @@
-import 'package:city/core/controllers/add_category_controller.dart';
-import 'package:city/core/controllers/add_product_controller.dart';
-import 'package:city/core/controllers/add_subcategory_controller.dart';
+import 'package:city/core/controllers/category_controller.dart';
+import 'package:city/core/controllers/product_controller.dart';
+import 'package:city/core/controllers/subcategory_controller.dart';
 import 'package:city/models/category.model.dart';
 import 'package:city/models/subcategory.model.dart';
 import 'package:flutter/material.dart';
@@ -26,8 +26,8 @@ class _MediaUploaderState extends State<MediaUploader> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaController = Get.put(AddProductController());
-    final categoryController = Get.put(AddCategoryController());
+    final mediaController = Get.put(ProductController());
+    final categoryController = Get.put(CategoryController());
     final subcategoryController = Get.put(AddSubCategoryController());
     return Scaffold(
       appBar: AppBar(
@@ -160,7 +160,7 @@ class _MediaUploaderState extends State<MediaUploader> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      GetBuilder<AddProductController>(
+                      GetBuilder<ProductController>(
                         builder: (_) {
                           if (mediaController.selectedImageBytes == null) {
                             return Column(

@@ -1,4 +1,4 @@
-import 'package:city/core/controllers/add_category_controller.dart';
+import 'package:city/core/controllers/category_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
@@ -17,7 +17,7 @@ class _CategoriesPageState extends State<Categories> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AddCategoryController());
+    final controller = Get.put(CategoryController());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Category'),
@@ -55,7 +55,7 @@ class _CategoriesPageState extends State<Categories> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  GetBuilder<AddCategoryController>(
+                  GetBuilder<CategoryController>(
                     builder: (_) {
                       if (controller.selectedImageBytes == null) {
                         return Column(

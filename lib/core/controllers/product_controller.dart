@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class AddProductController extends GetxController {
+class ProductController extends GetxController {
   Uint8List? selectedImageBytes;
 
   String? fileName;
