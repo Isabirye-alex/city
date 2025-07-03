@@ -103,6 +103,8 @@ class _SubcategoriesState extends State<Subcategories> {
                   alignment: Alignment.center,
                   children: [
                     Row(
+                     
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         GetBuilder<AddSubCategoryController>(
                           builder: (_) {

@@ -101,10 +101,6 @@ class _CategoriesPageState extends State<Categories> {
                 controller.category['name'] =
                     controller.categoryNameController.text;
                 controller.createNewCategory(context);
-                setState(() {
-                  controller.categoryNameController.clear();
-                  controller.selectedImageBytes!.clear();
-                });
               },
               child: const Text('Add Category'),
             ),

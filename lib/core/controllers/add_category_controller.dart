@@ -11,7 +11,6 @@ class AddCategoryController extends GetxController {
   String? fileName;
   final RxMap<String, dynamic> category = <String, dynamic>{}.obs;
   final categoryNameController = TextEditingController();
-  // final categoryDescriptionController = TextEditingController();
 
   /// For File Picker
   Future<void> selectImage() async {
@@ -52,7 +51,6 @@ class AddCategoryController extends GetxController {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final Map<String, dynamic> data = jsonDecode(response.body);
-
       if (response.statusCode == 201 || response.statusCode == 200) {
         // ✅ Clear the inputs and state
         selectedImageBytes = null;
@@ -81,23 +79,7 @@ class AddCategoryController extends GetxController {
       Get.snackbar('Error', 'Could not add new category: $e');
     }
   }
+Fut
 
-  /// For Dropzone
-  Future<void> handleDrop(dynamic event, DropzoneViewController ctrl) async {
-    try {
-      fileName = await ctrl.getFilename(event);
-      selectedImageBytes = await ctrl.getFileData(event);
-      update();
-    } catch (e) {
-      Get.snackbar('Drop Error', e.toString());
-    }
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
-    categoryNameController.dispose();
-    selectedImageBytes!.clear();
-    update();
-  }
 }
