@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 
 class AddProductController extends GetxController {
   Uint8List? selectedImageBytes;
+  
   String? fileName;
   final RxMap<String, dynamic> category = <String, dynamic>{}.obs;
   final categoryNameController = TextEditingController();

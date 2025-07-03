@@ -38,4 +38,5 @@ class AddCategoryController extends GetxController {
       print('Failed to add category: ${response.statusCode} - $body');
     }
   }
+  
 }

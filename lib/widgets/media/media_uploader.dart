@@ -2,9 +2,14 @@ import 'package:city/core/controllers/add_product_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class MediaUploader extends StatelessWidget {
+class MediaUploader extends StatefulWidget {
   const MediaUploader({super.key});
 
+  @override
+  State<MediaUploader> createState() => _MediaUploaderState();
+}
+
+class _MediaUploaderState extends State<MediaUploader> {
   @override
   Widget build(BuildContext context) {
     final mediaController = Get.put(AddProductController());
@@ -142,8 +147,12 @@ class MediaUploader extends StatelessWidget {
                       OutlinedButton(
                         onPressed: () {
                           if (mediaController.selectedImageBytes != null) {
-                            mediaController.selectedImageBytes == null;
-                            mediaController.selectImage();
+                            setState(() {
+                              mediaController.selectedImageBytes == null;
+                              mediaController.fileName = null;
+
+                              mediaController.selectImage();
+                            });
                           }
                         },
                         child: Text('Change Image'),
