@@ -41,19 +41,42 @@ class AddProductController extends GetxController {
           fileName == null ||
           products['name'] == null ||
           products['price'] == null ||
-          products['quantity'] == null) {
-        Get.snackbar('Validation', 'All fields including image must be filled');
+          products['stock'] == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'ValidationAll fields including image must be filled',
+            ),
+          ),
+        );
         return;
       }
 
       final uri = Uri.parse('http://localhost:3000/products');
       final request = http.MultipartRequest('POST', uri);
 
+      final price = products['price'];
+      final stock = products['stock'];
+
+      if (price == null ||
+          price.toString().isEmpty ||
+          stock == null ||
+          stock.toString().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Price and Stock must be provided')),
+        );
+        return;
+      }
+
       // Add fields
       request.fields['name'] = name;
       request.fields['category_id'] = parentId;
       request.fields['subcategory_id'] = childId;
       request.fields['description'] = desc;
+      request.fields['price'] = double.parse(
+        price.toString(),
+      ).toStringAsFixed(2);
+      request.fields['stock'] = int.parse(stock.toString()).toString();
       request.files.add(
         http.MultipartFile.fromBytes(
           'image',
@@ -73,9 +96,12 @@ class AddProductController extends GetxController {
         priceController.clear();
         nameController.clear();
         update();
-      } else {}
+      } else {
+        debugPrint('Unkown error occurred');
+      }
     } catch (e) {
-      Get.snackbar('Error', 'Could not add new category: $e');
+      debugPrint('Error creating new product: $e');
+      throw Exception('Error creating new product');
     }
   }
 }

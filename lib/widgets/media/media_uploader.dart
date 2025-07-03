@@ -16,6 +16,14 @@ class MediaUploader extends StatefulWidget {
 class _MediaUploaderState extends State<MediaUploader> {
   String? selectedCategory;
   String? selectedSubCategory;
+
+  @override
+  void initState() {
+    super.initState();
+    final subController = Get.put(AddSubCategoryController());
+    subController.getSubcategories();
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaController = Get.put(AddProductController());
@@ -80,12 +88,12 @@ class _MediaUploaderState extends State<MediaUploader> {
                 },
               );
             }),
-
+            SizedBox(height: 16),
             // Subcategory Dropdown
             Obx(() {
               return DropdownButtonFormField<SubCategoryModel>(
                 decoration: const InputDecoration(
-                  labelText: 'Select Parent Sub category',
+                  labelText: 'Select Sub category',
                   border: OutlineInputBorder(),
                 ),
                 value: selectedSubCategory != null
@@ -109,9 +117,10 @@ class _MediaUploaderState extends State<MediaUploader> {
                 },
               );
             }),
-
+            SizedBox(height: 16),
             // Price
             TextFormField(
+              controller: mediaController.priceController,
               decoration: const InputDecoration(
                 labelText: 'Price',
                 border: OutlineInputBorder(),
@@ -122,6 +131,7 @@ class _MediaUploaderState extends State<MediaUploader> {
 
             // Quantity
             TextFormField(
+              controller: mediaController.quantityController,
               decoration: const InputDecoration(
                 labelText: 'Quantity',
                 border: OutlineInputBorder(),
@@ -208,14 +218,22 @@ class _MediaUploaderState extends State<MediaUploader> {
 
             ElevatedButton(
               onPressed: () {
-                mediaController.products['name'] =
-                    mediaController.nameController;
-                mediaController.products['descritpion'] =
-                    mediaController.descriptionController;
-                mediaController.products['quantity'] =
-                    mediaController.quantityController;
-                mediaController.products['price'] =
-                    mediaController.priceController;
+                mediaController.products['name'] = mediaController
+                    .nameController
+                    .text
+                    .trim();
+                mediaController.products['description'] = mediaController
+                    .descriptionController
+                    .text
+                    .trim();
+                mediaController.products['stock'] = mediaController
+                    .quantityController
+                    .text
+                    .trim();
+                mediaController.products['price'] = mediaController
+                    .priceController
+                    .text
+                    .trim();
                 mediaController.createProduct(context);
               },
               child: const Text('Add Product'),
