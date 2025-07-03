@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:city/models/subcategory.model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -69,6 +70,16 @@ class AddSubCategoryController extends GetxController {
         subcategoryDescriptionController.clear();
         subcategoryNameController.clear();
         update();
+        Flushbar(
+          leftBarIndicatorColor: Colors.green,
+          shouldIconPulse: true,
+          icon: Icon(Icons.check_circle, color: Colors.green, size: 30),
+          message: 'Success, Sub successfully added',
+          duration: Duration(seconds: 4),
+          margin: EdgeInsets.only(top: 50),
+          borderRadius: BorderRadius.circular(8),
+          flushbarPosition: FlushbarPosition.TOP,
+        ).show(context);
       } else {}
     } catch (e) {
       Get.snackbar('Error', 'Could not add new category: $e');
