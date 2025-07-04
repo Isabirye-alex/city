@@ -464,7 +464,7 @@ class ABarGraph extends StatelessWidget {
                   horizontalInterval: 100,
                   drawVerticalLine: false,
                   getDrawingHorizontalLine: (value) =>
-                      FlLine(color: Colors.grey, strokeWidth: 0.5),
+                      FlLine(color: Colors.black, strokeWidth: 0.5),
                 ),
                 barGroups: controller.weeklySales.asMap().entries.map((entry) {
                   int index = entry.key;
@@ -521,17 +521,39 @@ FlTitlesData buildFlTitlesData() {
           final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
           final index = value.toInt() % days.length;
           final day = days[index];
-          return SideTitleWidget(space: 0, meta: meta, child: Text(day));
+          return SideTitleWidget(
+            space: 0,
+            meta: meta,
+            child: Text(day, style: TextStyle(color: Colors.black)),
+          );
         },
       ),
     ),
     leftTitles: AxisTitles(
-      sideTitles: SideTitles(showTitles: true, interval: 100, reservedSize: 50),
+      sideTitles: SideTitles(
+        showTitles: true,
+        interval: 100,
+        reservedSize: 50,
+        getTitlesWidget: (value, meta) {
+          return SideTitleWidget(
+            space: 0,
+            meta: meta,
+            child: Text(
+              value.toInt().toString(),
+              style: TextStyle(
+                color: Colors.black, // <-- Your custom color here
+                fontSize: 10,
+              ),
+            ),
+          );
+        },
+      ),
     ),
     rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
     topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
   );
 }
+
 // This widget can be used to create a desktop layout for the admin dashboard.
 
 class DisplayCards extends StatelessWidget {
