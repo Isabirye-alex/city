@@ -20,7 +20,7 @@ class _CategoriesPageState extends State<Categories> {
     final controller = Get.put(CategoryController());
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Category'),
+        title: const Text('All Categories'),
         backgroundColor: Colors.black45,
       ),
       body: Padding(

@@ -1,4 +1,3 @@
-
 import 'package:city/core/controllers/dashboard.controller.dart';
 import 'package:city/core/controllers/product_controller.dart';
 import 'package:city/models/product.model.dart';
@@ -233,16 +232,38 @@ class ADataTableSource extends DataTableSource {
       index: index,
       cells: [
         DataCell(
-          Image.network(
-            product.imageUrl,
-            width: 30,
-            height: 30,
-            errorBuilder: (_, __, ___) => Icon(Icons.broken_image),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: Image.network(
+              product.imageUrl,
+              width: 30,
+              height: 30,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Icon(Icons.broken_image),
+            ),
           ),
         ),
-        DataCell(Text(product.name)),
-        DataCell(Text(product.categoryName)),
-        DataCell(Text(product.subcategoryName)),
+        DataCell(
+          Text(
+            product.name,
+            style: TextStyle(overflow: TextOverflow.ellipsis),
+            maxLines: 1,
+          ),
+        ),
+        DataCell(
+          Text(
+            product.categoryName,
+            style: TextStyle(overflow: TextOverflow.ellipsis),
+            maxLines: 1,
+          ),
+        ),
+        DataCell(
+          Text(
+            product.subcategoryName,
+            style: TextStyle(overflow: TextOverflow.ellipsis),
+            maxLines: 1,
+          ),
+        ),
         DataCell(Text(product.stock.toString())),
         DataCell(Text(product.isFeatured == 1 ? 'Yes' : 'No')),
         DataCell(Text('UGX ${product.price}')),
@@ -279,7 +300,7 @@ class ADataTable extends StatelessWidget {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9,
+            width: MediaQuery.of(context).size.width * 0.85,
             child: PaginatedDataTable2(
               headingTextStyle: const TextStyle(
                 fontSize: 14,
@@ -295,7 +316,7 @@ class ADataTable extends StatelessWidget {
               checkboxHorizontalMargin: 4.0,
               showFirstLastButtons: true,
               columns: const [
-                DataColumn(label: Text('Image')),
+                DataColumn2(label: Text('Image'), fixedWidth: 70),
                 DataColumn(label: Text('Product Name')),
                 DataColumn(label: Text('Category')),
                 DataColumn(label: Text('Subcategory')),
@@ -311,6 +332,7 @@ class ADataTable extends StatelessWidget {
     });
   }
 }
+
 class APieChart extends StatelessWidget {
   const APieChart({super.key});
 
